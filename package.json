@@ -15,8 +15,8 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
-    "prestart": "npm run build",
-    "build": "npx vite build",
+    "prestart": "yarn run build",
+    "build": "vite build",
     "start": "node server.js"
   },
   "dependencies": {
