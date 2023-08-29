@@ -8,7 +8,6 @@
     "yarn": "1.x"
   },
   "scripts": {
-    "postinstall": "yarn add express",
     "dev": "vite",
     "build": "run build-only",
     "preview": "vite preview",
