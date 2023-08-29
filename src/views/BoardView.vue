@@ -2,12 +2,12 @@
 import { onMounted, computed, ref, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {useStore} from 'vuex';
-import { IBoard, ICardAddProps, ICardRemoveProps } from '@/interfaces'
+import type { IBoard } from '@/interfaces'
 import { BOARDS_ROUTE_NAME } from '@/router/routes'
+import { useWindowBeforeUnload } from '@/hooks'
 import DraggableList from '@/components/DraggableList.vue'
 import Button from '@/components/Button.vue'
 import Typography from '@/components/Typography.vue'
-import { useWindowBeforeUnload } from '@/hooks'
 
 const store = useStore();
 const router = useRouter();

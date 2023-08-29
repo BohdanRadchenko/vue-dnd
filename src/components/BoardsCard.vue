@@ -1,9 +1,9 @@
 <script setup lang='ts'>
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import { IBoard } from '@/interfaces'
-import Typography from '@/components/Typography.vue'
+import type { IBoard } from '@/interfaces'
 import { BOARDS_PAGE_ROUTE_NAME } from '@/router/routes'
+import Typography from '@/components/Typography.vue'
 import Button from '@/components/Button.vue'
 
 export interface IBoardCardProps {

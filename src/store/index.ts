@@ -5,7 +5,7 @@ import type {
   ICardAddProps,
   ICard,
   IListRemoveProps,
-  IListRenameProps, ICardRemoveProps
+  IListRenameProps, ICardRemoveProps, IList
 } from '@/interfaces'
 import api from '@/api';
 
@@ -18,7 +18,7 @@ const state: IStoreState = {
 }
 
 const mutations = {
-  setBoard (state, board: IBoard) {
+  setBoard (state: IStoreState, board: IBoard) {
     state.boardsMap.set(
       board.id,
       state.boardsMap.has(board.id)
@@ -26,10 +26,10 @@ const mutations = {
         : board
     );
   },
-  removeBoard(state, boardId: IBoard['id']) {
+  removeBoard(state: IStoreState, boardId: IBoard['id']) {
     state.boardsMap.delete(boardId);
   },
-  createBoardList(state, boardId: IBoard['id']) {
+  createBoardList(state: IStoreState, boardId: IBoard['id']) {
     const length = state.boardsMap.get(boardId)?.items?.length + 1;
     state.boardsMap.get(boardId)?.items.push({
       id: Date.now(),
@@ -37,16 +37,16 @@ const mutations = {
       items: [],
     })
   },
-  removeBoardList (state, payload: IListRemoveProps) {
+  removeBoardList (state: IStoreState, payload: IListRemoveProps) {
     const {boardId, listId} = payload;
-    const items = state.boardsMap.get(boardId)?.items;
+    const items:IList[] | undefined = state.boardsMap.get(boardId)?.items;
 
     if(!items) return;
     state
       .boardsMap.get(boardId)
       .items = items.filter(({id}) => id !== listId);
   },
-  renameBoardList (state, payload: IListRenameProps) {
+  renameBoardList (state: IStoreState, payload: IListRenameProps) {
     const {boardId, listId, title} = payload;
     const items = state.boardsMap.get(boardId)?.items;
 
@@ -59,7 +59,7 @@ const mutations = {
         return  { ...item, title }
     }));
   },
-  createBoardCard (state, payload: ICardAddProps) {
+  createBoardCard (state: IStoreState, payload: ICardAddProps) {
     const {boardId, listId, card, index} = payload;
 
     if(!!card && !card?.id) {
@@ -72,7 +72,7 @@ const mutations = {
       .find(({id}) => id === listId)?.items
       .splice(index, 0, card as ICard);
   },
-  removeBoardCard (state, payload: ICardRemoveProps) {
+  removeBoardCard (state: IStoreState, payload: ICardRemoveProps) {
     const {boardId, listId, cardId} = payload;
     const items = state.boardsMap.get(boardId)?.items
 
@@ -114,7 +114,7 @@ const actions = {
     api.boards.remove(boardId);
     commit('removeBoard', boardId);
   },
-  save({state}, boardId: IBoard['id']) {
+  save({state}: {state: IStoreState}, boardId: IBoard['id']) {
     const board = state.boardsMap.get(boardId);
     if(!board) return;
     api.boards.save(board)
@@ -122,11 +122,11 @@ const actions = {
 }
 
 const getters = {
-  boards: (state): IBoard[] => Array.from(
+  boards: (state: IStoreState): IBoard[] => Array.from(
     state.boardsMap,
     ([id, board]) => board
   ),
-  boardById: (state) : (boardId: string) => IBoard | undefined =>
+  boardById: (state: IStoreState) : (boardId: string) => IBoard | undefined =>
     boardId => state.boardsMap.get(Number(boardId)),
 }
 

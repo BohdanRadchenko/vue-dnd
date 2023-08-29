@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { ICard } from '@/interfaces'
+import type { ICard } from '@/interfaces'
 import Typography from '@/components/Typography.vue'
 import Button from '@/components/Button.vue'
 

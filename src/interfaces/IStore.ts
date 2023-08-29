@@ -1,6 +1,6 @@
-import { IBoard } from '@/interfaces/IBoard'
-import { IList } from '@/interfaces/IList'
-import { ICard } from '@/interfaces/ICard'
+import type { IBoard } from '@/interfaces/IBoard'
+import type { IList } from '@/interfaces/IList'
+import type { ICard } from '@/interfaces/ICard'
 
 export interface IStoreState {
   boardsMap: Map<number, IBoard>;

@@ -1,4 +1,6 @@
-export class LocalWorker<ID, Entity> {
+import type { IEntity } from '@/interfaces'
+
+export class LocalWorker<ID = string | number, Entity extends IEntity> {
   private readonly _key;
   private readonly local: Storage = localStorage;
 

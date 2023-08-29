@@ -1,12 +1,12 @@
 <script setup lang='ts'>
 import { ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
 import Draggable from "vuedraggable";
 import type { IList, IBoard, ICard } from '@/interfaces'
 import Card from '@/components/Card.vue'
 import Button from '@/components/Button.vue'
 import TypographyInput from '@/components/TypographyInput.vue'
-import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
 
 export interface IListProps {
   list: IList;

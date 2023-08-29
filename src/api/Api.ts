@@ -1,10 +1,10 @@
 import { BoardsApi } from '@/api/BoardsApi'
 
 export class Api {
-  private boards: BoardsApi = new BoardsApi();
+  private _boards: BoardsApi = new BoardsApi();
 
   public get boards() {
-    return this.boards;
+    return this._boards;
   }
 
 }
