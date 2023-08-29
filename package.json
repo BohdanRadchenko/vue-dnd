@@ -10,7 +10,7 @@
   "scripts": {
     "postinstall": "yarn add express",
     "dev": "vite",
-    "build": "run-p build-only",
+    "build": "run build-only",
     "preview": "vite preview",
     "test:unit": "vitest",
     "build-only": "vite build",
