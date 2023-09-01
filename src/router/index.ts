@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { routes } from './routes'
+import { HOME_ROUTE, LOGIN_ROUTE, REGISTER_ROUTE, routes } from './routes'
+import { store } from '../store';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,14 +8,15 @@ const router = createRouter({
 })
 
 router.beforeEach( (to, from, next) => {
-  // if(to.matched.some(record => !!record.meta.isAuth)){
-  //   let user = JSON.parse(localStorage.getItem('user'))
-  //   if(!user){
-  //     next(LOGIN_ROUTE)
-  //   }
-  // }
+  const requiresAuth = (to.meta as Record<string, unknown>).requireAuth;
+  const closeableWithAuth = [LOGIN_ROUTE, REGISTER_ROUTE]
+
+  if(store.state.auth.isAuth && closeableWithAuth.includes(to.path)) return next(HOME_ROUTE)
+
+  if(!!requiresAuth && !store.state.auth.isAuth) return next(LOGIN_ROUTE)
+
   next();
-})
+});
 
 
 export default router

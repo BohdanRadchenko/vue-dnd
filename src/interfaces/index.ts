@@ -1,4 +1,5 @@
 export type {IEntity} from './IEntity';
+export type {IUser} from './IUser';
 export type {ICard} from './ICard';
 export type {IList} from './IList';
 export type {IBoard} from './IBoard';
@@ -10,3 +11,8 @@ export type {
   IListRenameProps
 } from './IStore';
 export type {IBoardState} from './IBoardStore'
+export type {
+  IAuthStore,
+  IAuthLoginProps,
+  IAuthDataReturn,
+} from './IAuthStore'

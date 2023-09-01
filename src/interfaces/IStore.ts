@@ -2,9 +2,11 @@ import type { IBoard } from '@/interfaces/IBoard'
 import type { IList } from '@/interfaces/IList'
 import type { ICard } from '@/interfaces/ICard'
 import { IBoardState } from '@/interfaces/IBoardStore'
+import { IAuthStore } from '@/interfaces/IAuthStore'
 
 export interface IStoreState {
   board: IBoardState;
+  auth: IAuthStore;
 }
 
 export interface ICardAddProps {
