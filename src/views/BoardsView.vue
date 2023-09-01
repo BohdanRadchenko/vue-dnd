@@ -3,7 +3,7 @@ import { computed, onMounted } from 'vue'
 import {useStore} from 'vuex';
 import {useRouter} from 'vue-router'
 import Button from '@/components/Button.vue';
-import { BOARDS_PAGE_ROUTE_NAME } from '@/router/routes'
+import { BOARDS_ROUTE_NAME } from '@/router/routes'
 import BoardsCard from '@/components/BoardsCard.vue'
 
 const store = useStore();
@@ -18,7 +18,7 @@ onMounted(() => {
 const handleCreate = async () => {
   //TODO: is it ok? actions await ? best practice? window.location in actions method?
   const board = await store.dispatch("create", "test title");
-  return router.push({ name: BOARDS_PAGE_ROUTE_NAME, params: { boardId: board.id } })
+  return router.push({ name: BOARDS_ROUTE_NAME, params: { boardId: board.id } })
 }
 
 </script>

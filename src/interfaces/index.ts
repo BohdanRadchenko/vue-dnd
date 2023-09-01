@@ -9,3 +9,4 @@ export type {
   IListRemoveProps,
   IListRenameProps
 } from './IStore';
+export type {IBoardState} from './IBoardStore'
