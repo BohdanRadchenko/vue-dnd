@@ -1,5 +1,5 @@
 <script setup lang='ts' >
-import { onMounted, computed, ref, onUnmounted } from 'vue'
+import { onMounted, computed, ref, onUnmounted, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {useStore} from 'vuex';
 import type { IBoard } from '@/interfaces'
@@ -7,22 +7,29 @@ import { BOARDS_ROUTE_NAME } from '@/router/routes'
 import { useWindowBeforeUnload } from '@/hooks'
 import DraggableList from '@/components/DraggableList.vue'
 import Button from '@/components/Button.vue'
-import Typography from '@/components/Typography.vue'
+import TypographyInput from '@/components/TypographyInput.vue'
+import Loader from '@/components/Loader.vue'
 
 const store = useStore();
 const router = useRouter();
 const route = useRoute()
-const isLoading = ref(false);
 
-const boardId: IBoard['id'] = Number(route.params.boardId);
+const boardId: IBoard['id'] = route.params.boardId;
 
 const redirectToBoards = () => {
   router.push({name: BOARDS_ROUTE_NAME})
 };
 
-const board = computed(() => store.getters.boardById(boardId))
+const board = computed(() => store.getters['boards/getCurrentBoard']);
+const isLoading = computed(() => store.getters['boards/isLoading']);
 
 const isShowContent = computed(() => !!board.value && !isLoading.value)
+
+const title = ref(board?.value?.title || "")
+
+watchEffect(() => {
+  title.value = board?.value?.title || ""
+})
 
 const handleBack = () => {
   router.go(-1)
@@ -31,32 +38,43 @@ const handleBack = () => {
 const handleRemoveBoard = () => {
   const conf = confirm("Are you sure?");
   if(!conf) return;
-  store.dispatch("remove", boardId)
+  store.dispatch("boards/DELETE", boardId)
   redirectToBoards();
 }
 
-onMounted(  async () => {
-  isLoading.value = true;
-  if(!Number(boardId)) return redirectToBoards();
-  const result = await store.dispatch("getById", boardId)
-  isLoading.value = false;
-  if(!result) redirectToBoards(); //TODO: mb another lifecycle ?
+const handleTitleBlur = (currentValue: string) => {
+  const prevTitle = board?.value?.title;
+  if(prevTitle === currentValue || !currentValue) return;
+  store.dispatch(
+    "boards/UPDATE",
+    { _id: boardId, title: currentValue }
+  )
+}
+
+onMounted(  () => {
+  store.dispatch("boards/GET_BY_ID", boardId)
+    .catch(redirectToBoards)
 })
 
 onUnmounted(() => {
-  store.dispatch("save", boardId)
+  store.commit("boards/SET_CURRENT_BOARD", {board: null})
 })
 
-useWindowBeforeUnload(() => {
-  store.dispatch("save", boardId);
-})
+useWindowBeforeUnload(() => {})
 
 </script>
 
 <template>
+  <Loader :loading='isLoading'/>
   <div class='board__actions' v-if='isShowContent'>
     <Button @click='handleBack'>&lt;</Button>
-    <Typography :text='board.title' :variant='"title"' uppercase/>
+    <TypographyInput
+      :value='title'
+      :onBlur='handleTitleBlur'
+      :placeholder='board.title'
+      typography='title'
+      variant='text'
+    />
     <Button @click='handleRemoveBoard'>x</Button>
   </div>
   <div class='board__container' v-if='isShowContent'>

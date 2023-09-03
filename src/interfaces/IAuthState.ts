@@ -1,6 +1,6 @@
 import type { IUser } from '@/interfaces/IUser'
 
-export interface IAuthStore {
+export interface IAuthState {
   isAuth: boolean,
   user: IUser | null;
   error: string | null;

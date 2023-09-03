@@ -5,7 +5,9 @@ export const REGISTER_ROUTE: string = '/register';
 export const REGISTER_ROUTE_NAME: string = 'register';
 
 export const BOARDS_ROUTE: string = '/boards';
+export const BOARDS_ROUTE_NAME_INDEX: string = 'boards.index';
 export const BOARDS_ROUTE_NAME: string = 'boards';
+
 export const BOARDS_PAGE_ROUTE: string = '/boards/:boardId';
 export const BOARDS_PAGE_ID_ROUTE: string = ':boardId';
 export const BOARDS_PAGE_ROUTE_NAME: string = 'board';
@@ -32,24 +34,22 @@ export const routes = [
   },
   {
     path: BOARDS_ROUTE,
-    name: BOARDS_ROUTE_NAME,
+    name: BOARDS_ROUTE_NAME_INDEX,
     component: Layout,
     meta: {
       requireAuth: true,
     },
     children: [
       {
-        path: "",
-        component: BoardsView,
-      }, {
         path: BOARDS_PAGE_ID_ROUTE,
         name: BOARDS_PAGE_ROUTE_NAME,
         component: BoardView,
       },
       {
-        path: "/:boardId/*",
-        redirect: {name: ""},
-      }
+        path: "",
+        name: BOARDS_ROUTE_NAME,
+        component: BoardsView,
+      },
     ]
   },
   {

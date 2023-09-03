@@ -10,9 +10,12 @@ export type {
   IListRemoveProps,
   IListRenameProps
 } from './IStore';
-export type {IBoardState} from './IBoardStore'
 export type {
-  IAuthStore,
+  IBoardsState,
+  IBoardCreateProps,
+} from './IBoardsStore'
+export type {
+  IAuthState,
   IAuthLoginProps,
   IAuthDataReturn,
-} from './IAuthStore'
+} from './IAuthState'

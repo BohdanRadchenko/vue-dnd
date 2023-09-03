@@ -1,5 +1,5 @@
 import type {
-  IAuthStore,
+  IAuthState,
   IAuthLoginProps, IAuthDataReturn
 } from '@/interfaces'
 import api from '@/api'
@@ -7,33 +7,32 @@ import { TokenService } from '@/api/services/token.service'
 
 const service = new TokenService();
 
-const state: IAuthStore = {
+const state: IAuthState = {
   isAuth: !!service.getLocalAccessToken(),
   user: null,
   error: null,
 }
 
 const mutations = {
-  login(state: IAuthStore, data: IAuthDataReturn) {
+  login(state: IAuthState, data: IAuthDataReturn) {
     state.isAuth = true;
     state.user = data.user;
     service.updateLocalAccessToken(data.accessToken);
     service.updateLocalRefreshToken(data.refreshToken);
   },
-  logout(state: IAuthStore) {
+  logout(state: IAuthState) {
     state.isAuth = false;
     state.user = null;
     service.crear();
   },
-  setError(state: IAuthStore, error: string) {
+  setError(state: IAuthState, error: string) {
     state.error = error;
   }
 }
 
 const actions = {
-  async logout ({ commit }) {
+  async LOGOUT ({ commit }) {
     try {
-      console.log('logout');
       await api.auth.logout();
       commit('logout');
       return Promise.resolve();
@@ -42,7 +41,7 @@ const actions = {
       return Promise.reject(ex)
     }
   },
-  async login ({ commit }, data: IAuthLoginProps) {
+  async LOGIN ({ commit }, data: IAuthLoginProps) {
     try {
       const loginData = await api.auth.login(data);
       commit('login', loginData);
@@ -52,7 +51,7 @@ const actions = {
       return Promise.reject(ex)
     }
   },
-  async register ({ commit }, data: IAuthLoginProps) {
+  async REGISTER ({ commit }, data: IAuthLoginProps) {
     try {
       const loginData = await api.auth.register(data);
       commit('login', loginData);
@@ -64,11 +63,12 @@ const actions = {
 }
 
 const getters = {
-  isAuth: (state: IAuthStore): boolean => state.isAuth,
+  isAuth: (state: IAuthState): boolean => state.isAuth,
 }
 
 
 export default {
+  namespaced: true,
   state,
   mutations,
   actions,

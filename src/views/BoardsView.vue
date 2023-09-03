@@ -1,35 +1,65 @@
 <script setup lang='ts' >
-import { computed, onMounted } from 'vue'
+import {
+  computed,
+  onBeforeMount,
+  ref
+} from 'vue'
 import {useStore} from 'vuex';
-import {useRouter} from 'vue-router'
+import { useRouter } from 'vue-router'
 import Button from '@/components/Button.vue';
-import { BOARDS_ROUTE_NAME } from '@/router/routes'
+import { BOARDS_PAGE_ROUTE_NAME } from '@/router/routes'
 import BoardsCard from '@/components/BoardsCard.vue'
+import Input from '@/components/Input.vue'
+import { IBoard } from '@/interfaces'
 
 const store = useStore();
 const router = useRouter();
 
-const boards = computed(() => store.getters.boards)
+const ownerBoards = computed(() => store.getters['boards/getOwnerBoards'])
+const accessedBoards = computed(() => store.getters['boards/getAccessedBoards'])
 
-onMounted(() => {
-  store.dispatch("get");
+const title = ref<string>('')
+
+onBeforeMount(() => {
+  store.dispatch("boards/GET");
 })
 
-const handleCreate = async () => {
-  //TODO: is it ok? actions await ? best practice? window.location in actions method?
-  const board = await store.dispatch("create", "test title");
-  return router.push({ name: BOARDS_ROUTE_NAME, params: { boardId: board.id } })
+const redirectToBoardById = (boardId: IBoard['_id']) => {
+  return router.push({ name: BOARDS_PAGE_ROUTE_NAME, params: { boardId, } })
+}
+
+const handleCreate = () => {
+  //TODO: is it ok? actions await ? best practice? window.location in actions method? how get router instance in store without props ?
+  store.dispatch(
+    "boards/CREATE",
+    { title: title.value || "New board" }
+  ).then(board => {
+    redirectToBoardById(board._id)
+  }).finally(() => {
+    title.value = ""
+  })
 }
 
 </script>
 
 <template>
   <div class='container'>
-    <Button @click='handleCreate'>+</Button>
-    <div class='wrapper'>
+    <form @submit.prevent='handleCreate' class='form' >
+      <Input v-model='title'/>
+      <Button type="submit">+</Button>
+    </form>
+    <div class='wrapper' v-if='ownerBoards.length'>
       <BoardsCard
-        v-for='board in boards'
-        :key='board.id'
+        v-for='board in ownerBoards'
+        :key='board._id'
+        :board='board'
+      />
+    </div>
+    <br/>
+    <div class='wrapper' v-if='accessedBoards.length'>
+      <BoardsCard
+        v-for='board in accessedBoards'
+        :key='board._id'
         :board='board'
       />
     </div>
@@ -41,6 +71,14 @@ const handleCreate = async () => {
   display: flex;
   flex-direction: column;
   padding: 20px;
+  max-height: 100%;
+  overflow: auto;
+}
+
+.form {
+  max-width: 300px;
+  display: flex;
+  gap: 16px;
 }
 
 .wrapper {

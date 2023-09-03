@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import {useStore} from 'vuex';
 import Header from '@/components/Header.vue'
 
-const store = useStore();
-console.log("store.state.boardsMap", store.state.boardsMap)
 </script>
 
 <template>

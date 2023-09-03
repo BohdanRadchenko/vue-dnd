@@ -24,6 +24,6 @@ export class AuthService extends AbstractService {
   }
 
   public async refresh() {
-    return this.instance.post(this.auth.refresh);
+    return this.instance.get(this.auth.refresh);
   }
 }

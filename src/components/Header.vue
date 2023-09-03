@@ -7,11 +7,10 @@ import { LOGIN_ROUTE } from '@/router/routes'
 const store = useStore();
 const router = useRouter();
 
-const isAuth = computed(() => store.getters.isAuth)
-
+const isAuth = computed(() => store.getters['auth/isAuth'])
 
 const logout = () => {
-  store.dispatch('logout')
+  store.dispatch('auth/LOGOUT')
     .then(() => router.push(LOGIN_ROUTE))
 }
 

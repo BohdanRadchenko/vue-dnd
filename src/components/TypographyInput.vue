@@ -34,7 +34,7 @@ const valueState = ref(props.value)
     :class='[ props.typography, props.variant]'
     v-model="valueState"
     @change='onChange(valueState)'
-    @focus='onFocus()'
+    @focus='onFocus(this)'
     @blur='onBlur(valueState)'
     :placeholder='props.placeholder'
   />

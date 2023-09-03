@@ -15,7 +15,7 @@ const route = useRoute();
 const username = ref<string>("")
 const password = ref<string>("")
 
-const isAuth = computed(() => store.getters.isAuth)
+const isAuth = computed(() => store.getters['auth/isAuth'])
 
 watchEffect(() => {
   if(!isAuth.value) return;
@@ -28,7 +28,7 @@ const submit = () => {
     username: username.value,
     password: password.value
   };
-  store.dispatch('login',  data);
+  store.dispatch('auth/LOGIN',  data);
 }
 
 </script>
@@ -50,7 +50,7 @@ const submit = () => {
       />
       <Button type="submit" :shape='"sq"'>Login</Button>
     </form>
-    <RouterLink :to='REGISTER_ROUTE'> registration </RouterLink>
+    <RouterLink :to='REGISTER_ROUTE' replace> registration </RouterLink>
   </div>
 </template>
 

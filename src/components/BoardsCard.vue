@@ -15,32 +15,32 @@ const router = useRouter();
 
 const {board} = defineProps<IBoardCardProps>()
 
-const onRedirect = (e) => {
+const handleRedirect = (e) => {
   e.stopPropagation();
-  router.push({name: BOARDS_PAGE_ROUTE_NAME, params: {boardId: board.id}})
+  router.push({name: BOARDS_PAGE_ROUTE_NAME, params: {boardId: board._id}})
 }
 
-const onDelete = (e) => {
+const handleDelete = (e) => {
   e.stopPropagation();
   const conf = confirm("Are you sure?");
   if(!conf) return;
-  store.dispatch("remove", board.id)
+  store.dispatch("boards/DELETE", board._id)
 }
 
 </script>
 
 <template>
- <div class='card' @click='onRedirect'>
+ <div class='card' @click='handleRedirect'>
    <div class='card__content'>
-     <Typography :text='board.id'/>
+     <Typography :text='board._id'/>
      <Typography :text='board.title' :variant='"title"'/>
      <div class='card__content-wrap'>
        <Typography text='items:'/>
-       <Typography :text='board.items.length' :variant='"sm"'/>
+       <Typography :text='board?.items?.length' :variant='"sm"'/>
      </div>
    </div>
    <div class='card__actions'>
-     <Button @click='onDelete'>x</Button>
+     <Button @click='handleDelete'>x</Button>
    </div>
  </div>
 </template>
