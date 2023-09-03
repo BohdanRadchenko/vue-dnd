@@ -20,10 +20,14 @@
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
   --vt-c-text-dark-3: rgba(235, 235, 235, 0.90);
+
+
+  /*new*/
+  --c-white: #fff;
+  --dynamic-text-transparent: hsla(218,54%,19.6%,0.16);
 }
 
 :root {
-  --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
 
@@ -31,11 +35,19 @@
   --color-border-hover: var(--vt-c-divider-light-1);
 
   --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
 
-  --section-gap: 160px;
+  /*new*/
+  --background-main: var(--c-white);
+  --background-board: hsl(60,7.3%,83.4%);
+  --background: var(--c-white);
 
-  --color-background-header: var(--vt-c-black-mute);
+  --text-color: var(--vt-c-text-light-1);
+
+  --header-background-color: #ffffff3d;
+  --header-border-color: var(--dynamic-text-transparent);
+
+  --board-header-background-color: #ffffff3d;
+
   --color-background-list: var(--vt-c-text-dark-2);
   --color-background-card: var(--vt-c-white);
 }
@@ -74,7 +86,7 @@ textarea {
 
 body {
   min-height: 100vh;
-  color: var(--color-text);
-  background: var(--color-background);
+  color: var(--text-color);
+  background: var(--background);
   transition: color 0.5s, background-color 0.5s;
 }

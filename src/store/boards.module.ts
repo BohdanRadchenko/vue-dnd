@@ -31,17 +31,6 @@ const mutations = {
       isLoading: false
     }
   },
-  SET_BOARD (state: IStoreState, {board}: {board: IBoard}) {
-    if(!board._id) return;
-    state.boards = {
-      ...state.boards,
-      boards: [
-        board,
-        ...(state.boards.boards || [])
-          .filter(({_id}) => _id !== board._id)
-      ]
-    }
-  },
   SET_CURRENT_BOARD (state: IStoreState, {board}: {board: IBoard}) {
     state.boards = {
       ...state.boards,
@@ -55,7 +44,7 @@ const mutations = {
     }
   },
   DELETE_BOARD(state: IStoreState, { boardId }: {boardId: IBoard['id']}) {
-    state.boards.boards = state.boards.boards.filter(({_id}) => boardId !== _id);
+    state.boards.boards = state.boards.boards.filter(({id}) => boardId !== id);
   },
   // createBoardList(state: IBoardState, boardId: IBoard['id']) {
   //   const length = state.boardsMap.get(boardId)?.items?.length + 1;
@@ -118,7 +107,7 @@ const mutations = {
 }
 
 const actions = {
-  async GET ({ commit }) {
+  async GET({ commit }) {
     commit("SET_LOADING_TRUE")
     try {
       const boards = await api.boards.get;
@@ -131,22 +120,6 @@ const actions = {
     } catch (ex) {
       commit("SET_LOADING_FALSE")
       console.error('BOARDS_GET_ACTION', ex.message);
-      return Promise.reject(ex);
-    }
-  },
-  async GET_BY_ID ({ commit }, boardId: IBoard['_id']) {
-    commit("SET_LOADING_TRUE")
-    try {
-      const board = await api.boards.getById(boardId);
-      commit({
-        type: 'SET_CURRENT_BOARD',
-        board,
-      });
-      commit("SET_LOADING_FALSE")
-      return Promise.resolve(board);
-    } catch (ex) {
-      commit("SET_LOADING_FALSE")
-      console.error('BOARDS_GET_BY_ID_ACTION', ex.message);
       return Promise.reject(ex);
     }
   },
@@ -196,30 +169,10 @@ const actions = {
       return Promise.reject(ex);
     }
   },
-  // getById ({ state, commit }, boardId: IBoard['id']) {
-  //   if(state.boardsMap.has(boardId)) {
-  //     return state.boardsMap.get(boardId)
-  //   }
-  //   const board = api.boards.getById(boardId);
-  //   if(!board) return;
-  //   commit('setBoard', board);
-  //   return board;
-  // },
-  // create({commit}, title: IBoard['title']): IBoard {
-  //   const board = api.boards.create(title)
-  //   commit('setBoard', board);
-  //   return board;
-  // },
-  // save({state}: {state: IBoardState}, boardId: IBoard['id']) {
-  //   const board = state.boardsMap.get(boardId);
-  //   if(!board) return;
-  //   api.boards.save(board)
-  // }
 }
 
 const getters = {
   isLoading: (state: IStoreState): boolean => state.boards.isLoading,
-  getCurrentBoard: (state: IStoreState): IBoard | null => state.boards.currentBoard,
   getOwnerBoards: (state: IStoreState): IBoard[] => {
     const boards = state.boards.boards;
     if(!boards) return [];
@@ -230,10 +183,6 @@ const getters = {
     if(!boards) return [];
     return boards.filter(({isOwner}) => !isOwner)
   },
-  boards: (state: IBoardsState): IBoard[] => state.boards,
-  boardById: (state: IBoardsState): (boardId: IBoard["_id"]) => ( IBoard | undefined ) =>
-    (boardId: IBoard['_id']): IBoard | undefined =>
-    state.boards.find(({_id}) => _id === boardId)
 }
 
 

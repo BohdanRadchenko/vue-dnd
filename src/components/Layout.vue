@@ -4,7 +4,7 @@ import Header from '@/components/Header.vue'
 </script>
 
 <template>
- <div class='card'>
+ <div class='layout'>
    <Header/>
    <main>
      <slot/>
@@ -13,7 +13,7 @@ import Header from '@/components/Header.vue'
 </template>
 
 <style scoped>
-.card {
+.layout {
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
@@ -21,9 +21,8 @@ import Header from '@/components/Header.vue'
   flex-direction: column;
 }
 
-main {
+.layout main {
   width: 100%;
-  max-height: calc(100vh - 48px);
   flex-grow: 1;
   display: flex;
   flex-direction: column;

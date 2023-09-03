@@ -1,7 +1,8 @@
 
-export class TokenService {
+export class AuthLocalService<U extends undefined> {
   private readonly ACCESS_KEY: string = "access_token";
   private readonly REFRESH_KEY: string = "refresh_token";
+  private readonly USER_KEY: string = "user";
 
   private getDataByKey(key: string): string {
     return <string>localStorage.getItem(key)
@@ -35,8 +36,21 @@ export class TokenService {
     localStorage.removeItem(this.REFRESH_KEY)
   }
 
-  public crear() {
+  public getLocalUserData(): U | null {
+    return JSON.parse(this.getDataByKey(this.USER_KEY))
+  }
+
+  public updateLocalUserData(user: U) {
+    this.setDataByKey(this.USER_KEY, JSON.stringify(user));
+  }
+
+  public removeLocalUserData() {
+    localStorage.removeItem(this.USER_KEY)
+  }
+
+  public clear() {
     this.removeLocalAccessToken();
     this.removeLocalRefreshToken();
+    this.removeLocalUserData();
   }
 }

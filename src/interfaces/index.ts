@@ -15,6 +15,9 @@ export type {
   IBoardCreateProps,
 } from './IBoardsStore'
 export type {
+  IBoardState,
+} from './IBoardStore'
+export type {
   IAuthState,
   IAuthLoginProps,
   IAuthDataReturn,

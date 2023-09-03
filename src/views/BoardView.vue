@@ -4,24 +4,27 @@ import { useRoute, useRouter } from 'vue-router'
 import {useStore} from 'vuex';
 import type { IBoard } from '@/interfaces'
 import { BOARDS_ROUTE_NAME } from '@/router/routes'
-import { useWindowBeforeUnload } from '@/hooks'
+import { useWindowBeforeUnload, useChangeMainBackground } from '@/hooks'
 import DraggableList from '@/components/DraggableList.vue'
 import Button from '@/components/Button.vue'
 import TypographyInput from '@/components/TypographyInput.vue'
 import Loader from '@/components/Loader.vue'
+import {BoardModule} from '@/modules/board'
+import { SocketInstance } from '@/api/SocketInstance'
 
 const store = useStore();
 const router = useRouter();
 const route = useRoute()
+useChangeMainBackground('var(--background-board)');
 
-const boardId: IBoard['id'] = route.params.boardId;
+const boardId: IBoard['id'] = route.params.boardId as IBoard['id'];
 
 const redirectToBoards = () => {
   router.push({name: BOARDS_ROUTE_NAME})
 };
 
-const board = computed(() => store.getters['boards/getCurrentBoard']);
-const isLoading = computed(() => store.getters['boards/isLoading']);
+const board = computed(() => store.getters['board/getBoard']);
+const isLoading = computed(() => store.getters['board/isLoading']);
 
 const isShowContent = computed(() => !!board.value && !isLoading.value)
 
@@ -31,63 +34,64 @@ watchEffect(() => {
   title.value = board?.value?.title || ""
 })
 
-const handleBack = () => {
-  router.go(-1)
-}
-
-const handleRemoveBoard = () => {
-  const conf = confirm("Are you sure?");
-  if(!conf) return;
-  store.dispatch("boards/DELETE", boardId)
-  redirectToBoards();
-}
-
-const handleTitleBlur = (currentValue: string) => {
-  const prevTitle = board?.value?.title;
-  if(prevTitle === currentValue || !currentValue) return;
-  store.dispatch(
-    "boards/UPDATE",
-    { _id: boardId, title: currentValue }
-  )
-}
+// const handleBack = () => {
+//   router.go(-1)
+// }
+//
+// const handleRemoveBoard = () => {
+//   const conf = confirm("Are you sure?");
+//   if(!conf) return;
+//   store.dispatch("boards/DELETE", boardId)
+//   redirectToBoards();
+// }
+//
+// const handleTitleBlur = (currentValue: string) => {
+//   const prevTitle = board?.value?.title;
+//   if(prevTitle === currentValue || !currentValue) return;
+//   store.dispatch(
+//     "boards/UPDATE",
+//     { _id: boardId, title: currentValue }
+//   )
+// }
 
 onMounted(  () => {
-  store.dispatch("boards/GET_BY_ID", boardId)
-    .catch(redirectToBoards)
+  store.dispatch("board/GET", boardId)
+    .then(() => store.dispatch("board/CONNECT", boardId))
+    .catch(redirectToBoards);
 })
 
 onUnmounted(() => {
-  store.commit("boards/SET_CURRENT_BOARD", {board: null})
+  store.commit("board/SET_BOARD", {board: null})
+  store.dispatch("board/DISCONNECT")
 })
-
-useWindowBeforeUnload(() => {})
 
 </script>
 
 <template>
   <Loader :loading='isLoading'/>
-  <div class='board__actions' v-if='isShowContent'>
-    <Button @click='handleBack'>&lt;</Button>
-    <TypographyInput
-      :value='title'
-      :onBlur='handleTitleBlur'
-      :placeholder='board.title'
-      typography='title'
-      variant='text'
-    />
-    <Button @click='handleRemoveBoard'>x</Button>
-  </div>
-  <div class='board__container' v-if='isShowContent'>
-    <DraggableList
-      v-for="item in board.items"
-      :key="item.id"
-      :groupId='board.id'
-      :list='item'
-    />
-    <div class='board__container__buttons'>
-      <Button @click='store.commit("createBoardList", boardId)'>+</Button>
-    </div>
-  </div>
+  <BoardModule v-if='isShowContent'/>
+<!--  <div class='board__actions' v-if='isShowContent'>-->
+<!--    <Button @click='handleBack'>&lt;</Button>-->
+<!--    <TypographyInput-->
+<!--      :value='title'-->
+<!--      :onBlur='handleTitleBlur'-->
+<!--      :placeholder='board.title'-->
+<!--      typography='title'-->
+<!--      variant='text'-->
+<!--    />-->
+<!--    <Button @click='handleRemoveBoard'>x</Button>-->
+<!--  </div>-->
+<!--  <div class='board__container' v-if='isShowContent'>-->
+<!--    <DraggableList-->
+<!--      v-for="item in board.items"-->
+<!--      :key="item.id"-->
+<!--      :groupId='board.id'-->
+<!--      :list='item'-->
+<!--    />-->
+<!--    <div class='board__container__buttons'>-->
+<!--      <Button @click='store.commit("createBoardList", boardId)'>+</Button>-->
+<!--    </div>-->
+<!--  </div>-->
 </template>
 
 <style scoped>

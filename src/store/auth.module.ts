@@ -1,15 +1,15 @@
 import type {
   IAuthState,
-  IAuthLoginProps, IAuthDataReturn
+  IAuthLoginProps, IAuthDataReturn, IUser
 } from '@/interfaces'
 import api from '@/api'
-import { TokenService } from '@/api/services/token.service'
+import { AuthLocalService } from '@/api/services/auth-local.service'
 
-const service = new TokenService();
+const service = new AuthLocalService<IUser>();
 
 const state: IAuthState = {
-  isAuth: !!service.getLocalAccessToken(),
-  user: null,
+  isAuth: !!service.getLocalAccessToken() && !!service.getLocalUserData(),
+  user: service.getLocalUserData(),
   error: null,
 }
 
@@ -19,11 +19,13 @@ const mutations = {
     state.user = data.user;
     service.updateLocalAccessToken(data.accessToken);
     service.updateLocalRefreshToken(data.refreshToken);
+    service.updateLocalUserData(data.user);
   },
   logout(state: IAuthState) {
     state.isAuth = false;
     state.user = null;
-    service.crear();
+    state.error = null;
+    service.clear();
   },
   setError(state: IAuthState, error: string) {
     state.error = error;
@@ -64,6 +66,7 @@ const actions = {
 
 const getters = {
   isAuth: (state: IAuthState): boolean => state.isAuth,
+  me: (state: IAuthState): IUser | null => state.user,
 }
 
 

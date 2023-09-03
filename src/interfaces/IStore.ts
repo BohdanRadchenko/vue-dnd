@@ -2,10 +2,12 @@ import type { IBoard } from '@/interfaces/IBoard'
 import type { IList } from '@/interfaces/IList'
 import type { ICard } from '@/interfaces/ICard'
 import { IBoardsState } from '@/interfaces/IBoardsStore'
+import { IBoardState } from '@/interfaces/IBoardStore'
 import { IAuthState } from '@/interfaces/IAuthState'
 
 export interface IStoreState {
   boards: IBoardsState;
+  board: IBoardState;
   auth: IAuthState;
 }
 

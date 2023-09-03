@@ -1,5 +1,5 @@
 <script setup lang='ts' >
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 type TInputTypography = "title" | "body";
 type TInputVariant = "outlined" | "text";
@@ -26,6 +26,15 @@ const props = withDefaults(defineProps<ITypographyInputProps>(), {
 
 //TODO: how to reset value from parent? ref ?? ref.value ?? onUpdate ??
 const valueState = ref(props.value)
+const value = computed({
+  get() {
+    return props.modelValue
+  },
+  set(value) {
+    emit('update:modelValue', value)
+  }
+})
+
 </script>
 
 <template>
