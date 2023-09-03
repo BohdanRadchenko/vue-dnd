@@ -115,12 +115,12 @@ const actions = {
         type: 'LOAD_BOARDS',
         boards,
       });
-      commit("SET_LOADING_FALSE")
       return Promise.resolve(boards);
     } catch (ex) {
-      commit("SET_LOADING_FALSE")
       console.error('BOARDS_GET_ACTION', ex.message);
       return Promise.reject(ex);
+    } finally {
+      commit("SET_LOADING_FALSE")
     }
   },
   async CREATE({commit}, data: IBoardCreateProps) {
@@ -147,12 +147,12 @@ const actions = {
         type: 'DELETE_BOARD',
         boardId,
       });
-      commit("SET_LOADING_FALSE")
       return Promise.resolve();
     } catch (ex) {
-      commit("SET_LOADING_FALSE")
       console.error('BOARD_DELETE_ACTION', ex.message);
       return Promise.reject(ex);
+    } finally {
+      commit("SET_LOADING_FALSE")
     }
   },
   async UPDATE({commit}, {_id, ...rest}: IBoard) {
@@ -161,12 +161,12 @@ const actions = {
       const board = await api.boards.updateById(_id, rest);
       commit({ type: 'SET_BOARD', board });
       commit({ type: 'SET_CURRENT_BOARD', board });
-      commit("SET_LOADING_FALSE")
       return Promise.resolve(board);
     } catch (ex) {
-      commit("SET_LOADING_FALSE")
       console.error('BOARD_UPDATE_ACTION', ex.message);
       return Promise.reject(ex);
+    } finally {
+      commit("SET_LOADING_FALSE")
     }
   },
 }

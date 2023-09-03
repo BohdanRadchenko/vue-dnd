@@ -25,7 +25,6 @@ const mutations = {
   },
   SET_BOARD (state: IStoreState, {board}: {board: IBoard}) {
     const prevStateBoard = state.board.board ?? {};
-    console.log('board', board);
     state.board.board = {...prevStateBoard, ...board};
   }
 }
@@ -39,12 +38,12 @@ const actions = {
         type: 'SET_BOARD',
         board,
       });
-      commit("SET_LOADING_FALSE")
       return Promise.resolve(board);
     } catch (ex) {
-      commit("SET_LOADING_FALSE")
       console.error('BOARDS_GET_ACTION', ex.message);
       return Promise.reject(ex);
+    } finally {
+      commit("SET_LOADING_FALSE")
     }
   },
   CONNECT ({commit}, boardId: IBoard['id']) {

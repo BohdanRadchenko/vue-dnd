@@ -1,11 +1,11 @@
 <script setup lang='ts' >
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 
 type TInputTypography = "title" | "body";
 type TInputVariant = "outlined" | "text";
 
 export interface ITypographyInputProps {
-  value?: string;
+  modelValue: string;
   onChange?: (value: string) => void;
   onFocus?: () => void;
   onBlur?: (value: string) => void;
@@ -15,7 +15,7 @@ export interface ITypographyInputProps {
 }
 
 const props = withDefaults(defineProps<ITypographyInputProps>(), {
-  value: "",
+  modelValue: "",
   onChange: () => {},
   onBlur: () => {},
   onFocus: () => {},
@@ -24,8 +24,8 @@ const props = withDefaults(defineProps<ITypographyInputProps>(), {
   placeholder: "Enter text",
 });
 
-//TODO: how to reset value from parent? ref ?? ref.value ?? onUpdate ??
-const valueState = ref(props.value)
+const emit = defineEmits(['update:modelValue'])
+
 const value = computed({
   get() {
     return props.modelValue
@@ -41,10 +41,10 @@ const value = computed({
   <input
     class='typography-input__input'
     :class='[ props.typography, props.variant]'
-    v-model="valueState"
-    @change='onChange(valueState)'
-    @focus='onFocus(this)'
-    @blur='onBlur(valueState)'
+    v-model="value"
+    @change='onChange(this.modelValue)'
+    @focus='onFocus(this.modelValue)'
+    @blur='onBlur(this.modelValue)'
     :placeholder='props.placeholder'
   />
 </template>

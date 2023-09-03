@@ -34,10 +34,6 @@ watchEffect(() => {
   title.value = board?.value?.title || ""
 })
 
-// const handleBack = () => {
-//   router.go(-1)
-// }
-//
 // const handleRemoveBoard = () => {
 //   const conf = confirm("Are you sure?");
 //   if(!conf) return;
@@ -69,40 +65,13 @@ onUnmounted(() => {
 
 <template>
   <Loader :loading='isLoading'/>
-  <BoardModule v-if='isShowContent'/>
-<!--  <div class='board__actions' v-if='isShowContent'>-->
-<!--    <Button @click='handleBack'>&lt;</Button>-->
-<!--    <TypographyInput-->
-<!--      :value='title'-->
-<!--      :onBlur='handleTitleBlur'-->
-<!--      :placeholder='board.title'-->
-<!--      typography='title'-->
-<!--      variant='text'-->
-<!--    />-->
-<!--    <Button @click='handleRemoveBoard'>x</Button>-->
-<!--  </div>-->
-<!--  <div class='board__container' v-if='isShowContent'>-->
-<!--    <DraggableList-->
-<!--      v-for="item in board.items"-->
-<!--      :key="item.id"-->
-<!--      :groupId='board.id'-->
-<!--      :list='item'-->
-<!--    />-->
-<!--    <div class='board__container__buttons'>-->
-<!--      <Button @click='store.commit("createBoardList", boardId)'>+</Button>-->
-<!--    </div>-->
-<!--  </div>-->
+    <BoardModule v-if='isShowContent'/>
+<!--  <div class='board__container__buttons'>&ndash;&gt;-->
+    <!--      <Button @click='store.commit("createBoardList", boardId)'>+</Button>-->
+    <!--    </div>-->
 </template>
 
 <style scoped>
-.board__actions {
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-
 .board__container {
   height: 100%;
   flex-grow: 1;
