@@ -21,8 +21,12 @@ const props = defineProps<IBoardCardProps>()
   border-radius: 8px;
   cursor: pointer;
   flex-shrink: 0;
-  min-height: 36px;
+  min-height: 44px;
   scroll-margin: 8px;
   padding: 8px 8px 4px 12px;
+}
+
+.board__card:focus {
+  border: 1px solid var(--dynamic-text-transparent);
 }
 </style>

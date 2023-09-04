@@ -1,11 +1,12 @@
 <script setup lang='ts' >
 import { computed } from 'vue'
-import TypographyInput from '@/components/TypographyInput.vue'
-import Card from '@/components/Card.vue'
-import BoardCard from '@/modules/board/components/BoardCard.vue'
 import Draggable from 'vuedraggable'
 import { useRoute } from 'vue-router'
 import { IBoard } from '@/interfaces'
+import TypographyInput from '@/components/TypographyInput.vue'
+import Card from '@/components/Card.vue'
+import BoardCard from '@/modules/board/components/BoardCard.vue'
+import BoardCreateCard from '@/modules/board/components/BoardCreateCard.vue'
 
 interface IBoardColumnProps {
   titleValue?: string;
@@ -80,7 +81,7 @@ const title = computed({
       </template>
     </Draggable>
     <div class='board__column-footer'>
-      footer
+      <BoardCreateCard/>
     </div>
   </Card>
 </template>
