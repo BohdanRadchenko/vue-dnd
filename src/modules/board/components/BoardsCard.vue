@@ -17,14 +17,14 @@ const {board} = defineProps<IBoardCardProps>()
 
 const handleRedirect = (e) => {
   e.stopPropagation();
-  router.push({name: BOARDS_PAGE_ROUTE_NAME, params: {boardId: board._id}})
+  router.push({name: BOARDS_PAGE_ROUTE_NAME, params: {boardId: board.id}})
 }
 
 const handleDelete = (e) => {
   e.stopPropagation();
   const conf = confirm("Are you sure?");
   if(!conf) return;
-  store.dispatch("boards/DELETE", board._id)
+  store.dispatch("boards/DELETE", board.id)
 }
 
 </script>

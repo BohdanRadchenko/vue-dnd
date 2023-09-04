@@ -25,19 +25,14 @@ const value = computed({
 <style scoped>
 .input {
   width: 100%;
-  border-radius: 3rem;
   padding: 12px 16px;
   outline: none;
-  border: 1px solid var(--color-border);
-  box-shadow: 0 2px var(--vt-c-text-dark-3);
+  border-radius: .25rem;
+  border: 1px solid var(--ds-shadow-raised-1);
+  box-shadow: var(--ds-shadow-raised-1);
 }
 
 .input:focus {
-  outline: 1px solid var(--vt-c-divider-dark-2);
+  outline: 1px solid var(--dynamic-text-transparent);
 }
-
-.input:hover {
-  outline: 1px solid var(--vt-c-divider-dark-1);
-}
-
 </style>

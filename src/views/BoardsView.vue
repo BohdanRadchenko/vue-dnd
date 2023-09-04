@@ -8,7 +8,7 @@ import {useStore} from 'vuex';
 import { useRouter } from 'vue-router'
 import Button from '@/components/Button.vue';
 import { BOARDS_PAGE_ROUTE_NAME } from '@/router/routes'
-import BoardsCard from '@/components/BoardsCard.vue'
+import BoardsCard from '@/modules/board/components/BoardsCard.vue'
 import Input from '@/components/Input.vue'
 import { IBoard } from '@/interfaces'
 
@@ -25,7 +25,7 @@ onBeforeMount(() => {
 })
 
 const redirectToBoardById = (boardId: IBoard['_id']) => {
-  return router.push({ name: BOARDS_PAGE_ROUTE_NAME, params: { boardId, } })
+  return router.push({ name: BOARDS_PAGE_ROUTE_NAME, params: { boardId } })
 }
 
 const handleCreate = () => {
@@ -34,7 +34,7 @@ const handleCreate = () => {
     "boards/CREATE",
     { title: title.value || "New board" }
   ).then(board => {
-    redirectToBoardById(board._id)
+    redirectToBoardById(board.id)
   }).finally(() => {
     title.value = ""
   })
@@ -51,7 +51,7 @@ const handleCreate = () => {
     <div class='wrapper' v-if='ownerBoards.length'>
       <BoardsCard
         v-for='board in ownerBoards'
-        :key='board._id'
+        :key='board.id'
         :board='board'
       />
     </div>
@@ -59,7 +59,7 @@ const handleCreate = () => {
     <div class='wrapper' v-if='accessedBoards.length'>
       <BoardsCard
         v-for='board in accessedBoards'
-        :key='board._id'
+        :key='board.id'
         :board='board'
       />
     </div>

@@ -55,3 +55,8 @@ body {
   background: var(--background);
   transition: color 0.5s, background-color 0.5s;
 }
+
+svg {
+  font-size: 16px;
+
+}

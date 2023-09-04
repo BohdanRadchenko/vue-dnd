@@ -1,9 +1,16 @@
 <script setup lang='ts' >
+import { ICard } from '@/interfaces'
+
+interface IBoardCardProps {
+  card: ICard
+}
+
+const props = defineProps<IBoardCardProps>()
 </script>
 
 <template>
  <div class='board__card'>
-   Card
+   {{props.card.id}} {{props.card.description}}
  </div>
 </template>
 

@@ -1,69 +1,77 @@
 <script  setup lang='ts'>
-import { ref } from 'vue'
+import { computed, onMounted, onUpdated, ref } from 'vue'
 import Draggable from 'vuedraggable'
-import BoardColumn from '@/components/BoardColumn.vue'
-import BoardCard from '@/components/BoardCard.vue'
+import BoardColumn from '@/modules/board/components/BoardColumn.vue'
+import BoardCreateColumn from '@/modules/board/components/BoardCreateColumn.vue'
 
-const lists = ref([
-  {id: 1, title: "list 1", items: [{id: 11, title: "11", items: [{id: 111, description: "111"}, {id: 1111, description: "1111"}]}]},
-  {id: 2, title: "list 2", items: [{id: 22, title: "22", items: [{id: 222, description: "222"}, {id: 2222, description: "2222"}]}]},
-  {id: 3, title: "list 3", items: [{id: 33, title: "33", items: [{id: 333, description: "333"}, {id: 3333, description: "3333"}]}]},
-  {id: 4, title: "list 4", items: [
-    {id: 939, title: "33", items: [{id: 393, description: "333"}, {id: 3993, description: "3333"}]},
-    {id: 838, title: "33", items: [{id: 383, description: "333"}, {id: 3883, description: "3333"}]},
-    {id: 737, title: "33", items: [{id: 373, description: "333"}, {id: 3773, description: "3333"}]},
-    {id: 636, title: "33", items: [{id: 363, description: "333"}, {id: 3663, description: "3333"}]},
-    {id: 535, title: "33", items: [{id: 353, description: "333"}, {id: 3553, description: "3333"}]},
-    {id: 434, title: "33", items: [{id: 343, description: "333"}, {id: 3443, description: "3333"}]},
-    {id: 333, title: "33", items: [{id: 333, description: "333"}, {id: 3333, description: "3333"}]},
-    {id: 232, title: "33", items: [{id: 323, description: "333"}, {id: 3223, description: "3333"}]},
-    {id: 131, title: "33", items: [{id: 313, description: "333"}, {id: 3113, description: "3333"}]},
-    {id: 383, title: "33", items: [{id: 383, description: "333"}, {id: 3883, description: "3333"}]},
-    {id: 373, title: "33", items: [{id: 373, description: "333"}, {id: 3773, description: "3333"}]},
-    {id: 363, title: "33", items: [{id: 363, description: "333"}, {id: 3663, description: "3333"}]},
-    {id: 353, title: "33", items: [{id: 353, description: "333"}, {id: 3553, description: "3333"}]},
-    {id: 343, title: "33", items: [{id: 343, description: "333"}, {id: 3443, description: "3333"}]},
-    {id: 333, title: "33", items: [{id: 333, description: "333"}, {id: 3333, description: "3333"}]},
-    {id: 323, title: "33", items: [{id: 323, description: "333"}, {id: 3223, description: "3333"}]},
-    {id: 313, title: "33", items: [{id: 313, description: "333"}, {id: 3113, description: "3333"}]},
-    ]
+const getCard = (index) => ({
+  id: Date.now() + index * 44,
+  description: Date.now() + index * 44 + " card description",
+
+})
+
+const getList = (index) => ({
+  id: Date.now() + index * 33,
+  title: 'list title ' + index,
+  cards: [
+    getCard(1), getCard(2), getCard(3), getCard(4), getCard(5),
+    getCard(11), getCard(22), getCard(33), getCard(44), getCard(55),
+    getCard(111), getCard(222), getCard(333), getCard(444), getCard(555),
+    getCard(1111), getCard(2222), getCard(3333), getCard(4444), getCard(5555),
+    getCard(11111), getCard(22222), getCard(33333), getCard(44444), getCard(55555),
+  ]
+})
+
+const board = ({
+  title: "title",
+  id: 123123,
+  lists: [getList(1), getList(2), getList(3), getList(4), getList(5)]
+})
+
+
+const columns = computed({
+  get() {
+    return board.lists
   },
-])
+  set(value) {
+    console.log('value', value);
+  },
+})
+
+
+const containerRef = ref()
+const buttonRef = ref()
+
+onMounted(() => {
+  if(!containerRef.value || !buttonRef.value) return;
+  containerRef.value.targetDomElement.appendChild(buttonRef.value)
+})
 
 </script>
 
 <template>
   <Draggable
-    v-model:list='lists'
+    v-model='columns'
     class='board__list'
     item-key='id'
     tag='ul'
+    ref='containerRef'
   >
-    <template #item="{ element: list }">
-      <BoardColumn v-model:titleValue='list.title'>
-        <Draggable
-          v-model:list='list.items'
-          item-key='id'
-          :group='1'
-          class='board__card-list'
-          tag='ul'
-        >
-          <template #item="{ element: card }">
-              <BoardCard :card='card'/>
-          </template>
-        </Draggable>
-      </BoardColumn>
+    <template #item="{ element: column }">
+      <li class='board__list-item'>
+        <BoardColumn :items='column'/>
+      </li>
     </template>
   </Draggable>
+  <div ref='buttonRef' class='board__list-action'>
+    <BoardCreateColumn ref='buttonRef'/>
+  </div>
 </template>
 
 <style scoped>
-.board__container {
-}
 .board__list{
   margin: 0;
   padding: 14px 12px;
-  list-style: none;
   align-items: start;
   overflow-x: auto;
   height: calc(100vh - 88px);
@@ -71,13 +79,24 @@ const lists = ref([
   grid-auto-columns: 300px;
   grid-auto-flow: column;
   grid-column-gap: 20px;
+  position: relative;
 }
-.board__card-list {
+
+.board__list-action {
+  /*position: absolute;*/
+  /*top: 0;*/
+  /*right: 0;*/
+}
+
+.board__list-item {
+  list-style: none;
   margin: 0;
   padding: 0;
+  height: auto;
+  max-height: 100%;
+  flex-grow: 1;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  overflow: auto;
 }
 </style>

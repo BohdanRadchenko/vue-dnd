@@ -1,7 +1,6 @@
 <script setup lang='ts' >
 import BoardModuleHeader from '@/modules/board/BoardModuleHeader.vue'
 import BoardModuleContent from '@/modules/board/BoardModuleContent.vue'
-
 </script>
 
 <template>

@@ -66,9 +66,17 @@ onUnmounted(() => {
 <template>
   <Loader :loading='isLoading'/>
     <BoardModule v-if='isShowContent'/>
-<!--  <div class='board__container__buttons'>&ndash;&gt;-->
-    <!--      <Button @click='store.commit("createBoardList", boardId)'>+</Button>-->
-    <!--    </div>-->
+<!--  <div class='board__container' v-if='isShowContent'>-->
+<!--    <DraggableList-->
+<!--      v-for="item in lists"-->
+<!--      :key="item.id"-->
+<!--      :groupId='board.id'-->
+<!--      :list='item'-->
+<!--    />-->
+<!--    <div class='board__container__buttons'>-->
+<!--      <Button @click='store.commit("createBoardList", boardId)'>+</Button>-->
+<!--    </div>-->
+<!--  </div>-->
 </template>
 
 <style scoped>
