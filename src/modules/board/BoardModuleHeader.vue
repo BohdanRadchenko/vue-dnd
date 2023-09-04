@@ -1,10 +1,13 @@
 <script setup lang='ts'>
-import { useStore } from 'vuex'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 import { BOARDS_ROUTE_NAME } from '@/router/routes'
 import TypographyInput from '@/components/TypographyInput.vue'
-import { computed, ref } from 'vue'
+import ButtonIcon  from '@/components/ButtonIcon.vue'
 import { IBoard } from '@/interfaces'
+import DeleteIcon from '@/assets/icons/DeleteIcon.vue'
+import LeftIcon from '@/assets/icons/LeftIcon.vue'
 
 const store = useStore();
 const router = useRouter();
@@ -38,8 +41,10 @@ const handleRemoveBoard = () => {
 </script>
 
 <template>
- <section class='board__header'>
-    <button @click='redirectToBoards'>Back</button>
+  <section class='board__header'>
+    <ButtonIcon @click='redirectToBoards'>
+      <LeftIcon/>
+    </ButtonIcon>
     <TypographyInput
       v-model='title'
       :onBlur='handleTitleBlur'
@@ -47,8 +52,10 @@ const handleRemoveBoard = () => {
       typography='title'
       variant='text'
     />
-   <button @click='handleRemoveBoard'>delete</button>
- </section>
+   <ButtonIcon @click='handleRemoveBoard'>
+     <DeleteIcon/>
+   </ButtonIcon>
+  </section>
 </template>
 
 <style scoped>
@@ -57,6 +64,7 @@ const handleRemoveBoard = () => {
   background-color: var(--board-header-background-color);
   backdrop-filter: blur(4px);
   display: flex;
+  align-items: center;
   gap: 20px;
 }
 

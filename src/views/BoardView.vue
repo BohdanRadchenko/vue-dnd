@@ -4,13 +4,9 @@ import { useRoute, useRouter } from 'vue-router'
 import {useStore} from 'vuex';
 import type { IBoard } from '@/interfaces'
 import { BOARDS_ROUTE_NAME } from '@/router/routes'
-import { useWindowBeforeUnload, useChangeMainBackground } from '@/hooks'
-import DraggableList from '@/components/DraggableList.vue'
-import Button from '@/components/Button.vue'
-import TypographyInput from '@/components/TypographyInput.vue'
+import { useChangeMainBackground } from '@/hooks'
 import Loader from '@/components/Loader.vue'
 import {BoardModule} from '@/modules/board'
-import { SocketInstance } from '@/api/SocketInstance'
 
 const store = useStore();
 const router = useRouter();
@@ -65,34 +61,8 @@ onUnmounted(() => {
 
 <template>
   <Loader :loading='isLoading'/>
-    <BoardModule v-if='isShowContent'/>
-<!--  <div class='board__container' v-if='isShowContent'>-->
-<!--    <DraggableList-->
-<!--      v-for="item in lists"-->
-<!--      :key="item.id"-->
-<!--      :groupId='board.id'-->
-<!--      :list='item'-->
-<!--    />-->
-<!--    <div class='board__container__buttons'>-->
-<!--      <Button @click='store.commit("createBoardList", boardId)'>+</Button>-->
-<!--    </div>-->
-<!--  </div>-->
+  <BoardModule v-if='isShowContent'/>
 </template>
 
 <style scoped>
-.board__container {
-  height: 100%;
-  flex-grow: 1;
-  padding: 10px;
-  align-items: start;
-  display: grid;
-  grid-auto-columns: 300px;
-  grid-auto-flow: column;
-  grid-column-gap: 20px;
-  overflow: auto hidden;
-}
-
-.board__container__buttons {
-  padding-top: 4px;
-}
 </style>

@@ -58,11 +58,24 @@ const value = computed({
 
   width: 100%;
   line-height: 1.2;
-  border-radius: 2em;
+  border-radius: .25rem;
 }
 
 .typography-input__input:not(:focus) {
   cursor: pointer;
+}
+
+.typography-input__input:focus {
+  outline: 1px solid var(--dynamic-text-transparent);
+  border: 1px solid var(--ds-shadow-raised-1);
+  box-shadow: var(--ds-shadow-raised-1);
+}
+
+.typography-input__input:focus {
+  outline: 1px solid var(--dynamic-text-transparent);
+  border: 1px solid var(--ds-shadow-raised-1);
+  box-shadow: var(--ds-shadow-raised-1);
+  background-color: #fff;
 }
 
 .typography-input__input.title {

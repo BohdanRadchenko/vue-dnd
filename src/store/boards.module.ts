@@ -172,7 +172,7 @@ const actions = {
 }
 
 const getters = {
-  isLoading: (state: IStoreState): boolean => state.boards.isLoading,
+  isLoading: (state: IStoreState): boolean => !!state.boards.isLoading,
   getOwnerBoards: (state: IStoreState): IBoard[] => {
     const boards = state.boards.boards;
     if(!boards) return [];

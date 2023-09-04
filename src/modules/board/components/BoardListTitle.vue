@@ -1,57 +1,50 @@
 <script setup lang='ts'>
-import { ref } from 'vue'
-import PlusIcon from '@/assets/icons/PlusIcon.vue'
-import XMarkIcon from '@/assets/icons/XMarkIcon.vue'
+import { computed, ref } from 'vue'
+import CheckIcon from '@/assets/icons/CheckIcon.vue'
 import ButtonIcon from '@/components/ButtonIcon.vue'
-import Button from '@/components/Button.vue'
+import TypographyInput from '@/components/TypographyInput.vue'
+
+const props = defineProps(["modelValue"])
 
 const isCreating = ref(false)
-const description = ref<string>("")
+const title = ref<string>("")
 
 const onCloseForm = () => {
-  description.value = "";
+  title.value = props.modelValue;
   isCreating.value = false;
 }
 
 const onSubmit = () => {
-  description.value = "";
+  console.log('title.value', title.value);
 }
+
+const modelValue = computed({
+  get() {
+    return props.modelValue
+  },
+  set(value: string) {
+    title.value = value;
+  },
+})
+
 
 </script>
 
 <template>
-  <form
-    class='form'
-    v-if="isCreating"
+  <TypographyInput
+    v-model='modelValue'
     @keydown.esc="onCloseForm"
-    @submit.prevent="onSubmit"
+    :onBlur='onCloseForm'
+    :placeholder='title'
+    typography='title'
+    variant='text'
+  />
+  <ButtonIcon
+    v-if='isCreating'
+    @click.prevent="onSubmit"
   >
-    <textarea
-      @keydown.esc="onCloseForm"
-      v-model="description"
-      class='form__input'
-      rows="3"
-      placeholder="Enter a title for this card..."
-    />
-    <div class='form__actions'>
-      <Button
-        text='Add list'
-        type="submit"
-        class='form__actions-submit'
-      />
-      <ButtonIcon @click.prevent="onCloseForm">
-        <XMarkIcon/>
-      </ButtonIcon>
-    </div>
-  </form>
-  <button
-    v-if="!isCreating"
-    @click.prevent="isCreating = true"
-    class='btn'
-  >
-    <PlusIcon/>
-    <span>Add a card</span>
-  </button>
+    <CheckIcon/>
+  </ButtonIcon>
 </template>
 
 <style scoped>

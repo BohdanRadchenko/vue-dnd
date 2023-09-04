@@ -1,11 +1,11 @@
 <template>
-  <div class='card'>
+  <div class='card-component'>
     <slot/>
   </div>
 </template>
 
 <style scoped>
-.card {
+.card-component {
   background-color: var(--column-background-color);
   border-radius: 12px;
   padding: 8px;

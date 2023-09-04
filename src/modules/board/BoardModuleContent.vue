@@ -82,12 +82,6 @@ onMounted(() => {
   position: relative;
 }
 
-.board__list-action {
-  /*position: absolute;*/
-  /*top: 0;*/
-  /*right: 0;*/
-}
-
 .board__list-item {
   list-style: none;
   margin: 0;

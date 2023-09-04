@@ -3,10 +3,10 @@ import { computed } from 'vue'
 import Draggable from 'vuedraggable'
 import { useRoute } from 'vue-router'
 import { IBoard } from '@/interfaces'
-import TypographyInput from '@/components/TypographyInput.vue'
 import Card from '@/components/Card.vue'
 import BoardCard from '@/modules/board/components/BoardCard.vue'
 import BoardCreateCard from '@/modules/board/components/BoardCreateCard.vue'
+import BoardListTitle from '@/modules/board/components/BoardListTitle.vue'
 
 interface IBoardColumnProps {
   titleValue?: string;
@@ -19,22 +19,6 @@ const route = useRoute()
 const boardId: IBoard['id'] = route.params.boardId as IBoard['id'];
 
 const props = defineProps<IBoardColumnProps>()
-const emit = defineEmits(['update:titleValue', 'update:createValue'])
-
-const titleValue = computed({
-  get() {
-    return props.titleValue
-  },
-  set(value) {
-    emit('update:titleValue', value)
-  }
-})
-
-const onBluerTitle = (prop) => {
-  console.log('prop value', prop);
-  console.log('props.titleValue', props.titleValue);
-  console.log('titleValue', titleValue);
-}
 
 const cards = computed({
   get() {
@@ -45,27 +29,13 @@ const cards = computed({
   },
 })
 
-const title = computed({
-  get() {
-    return props.items.title
-  },
-  set(value) {
-    console.log('value', value);
-  },
-})
 
 </script>
 
 <template>
   <Card class='board__column'>
     <div class='board__column-header'>
-      <TypographyInput
-        v-model='title'
-        :onBlur='onBluerTitle'
-        :placeholder='props.items.title'
-        typography='title'
-        variant='text'
-      />
+      <BoardListTitle v-model='props.items'/>
     </div>
     <Draggable
       v-model='cards'
@@ -96,6 +66,10 @@ const title = computed({
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+}
+
+.board__column-header {
+  padding: 4px 0 0;
 }
 
 .board__column-main {

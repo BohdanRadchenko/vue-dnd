@@ -24,6 +24,7 @@
   min-height: 32px;
   transition: all 250ms;
   box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+  border-radius: .25rem;
 }
 
 

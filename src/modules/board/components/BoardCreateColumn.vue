@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 import Card from '@/components/Card.vue'
 import Input from '@/components/Input.vue'
-import PlusIcon from '@/assets/icons/Plus.vue'
-import XMarkIcon from '@/assets/icons/XMark.vue'
+import PlusIcon from '@/assets/icons/PlusIcon.vue'
+import XMarkIcon from '@/assets/icons/XMarkIcon.vue'
 import ButtonIcon from '@/components/ButtonIcon.vue'
 import Button from '@/components/Button.vue'
 

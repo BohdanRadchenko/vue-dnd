@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { LOGIN_ROUTE } from '@/router/routes'
 import Typography from '@/components/Typography.vue'
+import ButtonIcon from '@/components/ButtonIcon.vue'
+import LogoutIcon from '@/assets/icons/LogoutIcon.vue'
 
 const store = useStore();
 const router = useRouter();
@@ -26,7 +28,9 @@ const logout = () => {
         <Typography :text='user.username'/>
       </div>
       <div class="header__actions" v-if='isShowContent'>
-        <button @click='logout'>Logout</button>
+        <ButtonIcon @click='logout'>
+          <LogoutIcon/>
+        </ButtonIcon>
       </div>
     </header>
 </template>
