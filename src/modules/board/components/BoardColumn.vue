@@ -6,7 +6,7 @@ import { IBoard } from '@/interfaces'
 import Card from '@/components/Card.vue'
 import BoardCard from '@/modules/board/components/BoardCard.vue'
 import BoardCreateCard from '@/modules/board/components/BoardCreateCard.vue'
-import BoardListTitle from '@/modules/board/components/BoardListTitle.vue'
+import BoardHeaderTitle from '@/modules/board/components/BoardHeaderTitle.vue'
 
 interface IBoardColumnProps {
   titleValue?: string;
@@ -29,13 +29,17 @@ const cards = computed({
   },
 })
 
+const handleRename = () => {
+
+}
+
 
 </script>
 
 <template>
   <Card class='board__column'>
     <div class='board__column-header'>
-      <BoardListTitle v-model='props.items'/>
+      <BoardHeaderTitle :title='props.items' :onRename='handleRename'/>
     </div>
     <Draggable
       v-model='cards'

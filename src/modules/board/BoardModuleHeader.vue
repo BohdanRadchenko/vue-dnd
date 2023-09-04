@@ -3,11 +3,11 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { BOARDS_ROUTE_NAME } from '@/router/routes'
-import TypographyInput from '@/components/TypographyInput.vue'
 import ButtonIcon  from '@/components/ButtonIcon.vue'
 import { IBoard } from '@/interfaces'
 import DeleteIcon from '@/assets/icons/DeleteIcon.vue'
 import LeftIcon from '@/assets/icons/LeftIcon.vue'
+import BoardHeaderTitle from '@/modules/board/components/BoardHeaderTitle.vue'
 
 const store = useStore();
 const router = useRouter();
@@ -15,19 +15,13 @@ const route = useRoute()
 
 const boardId: IBoard['id'] = route.params.boardId as IBoard['id'];
 const board = computed(() => store.getters['board/getBoard']);
-const title = ref(board?.value?.title || "")
+
+const onRename = (title: string) => {
+  store.dispatch("board/UPDATE", {title})
+}
 
 const redirectToBoards = () => {
   router.push({name: BOARDS_ROUTE_NAME});
-}
-
-const handleTitleBlur = (currentValue: string) => {
-  const prevTitle = board?.value?.title;
-  if(prevTitle === currentValue || !currentValue) {
-    title.value = prevTitle;
-    return;
-  }
-  store.dispatch("board/UPDATE", {title: currentValue})
 }
 
 const handleRemoveBoard = () => {
@@ -41,16 +35,15 @@ const handleRemoveBoard = () => {
 
 <template>
   <section class='board__header'>
-    <ButtonIcon @click='redirectToBoards'>
-      <LeftIcon/>
-    </ButtonIcon>
-    <TypographyInput
-      v-model='title'
-      :onBlur='handleTitleBlur'
-      :placeholder='board.title'
-      typography='title'
-      variant='text'
-    />
+    <div class='board__header-left'>
+      <ButtonIcon @click='redirectToBoards'>
+        <LeftIcon/>
+      </ButtonIcon>
+      <BoardHeaderTitle
+        :title='board.title'
+        :onRename='onRename'
+      />
+    </div>
    <ButtonIcon @click='handleRemoveBoard'>
      <DeleteIcon/>
    </ButtonIcon>
@@ -63,8 +56,14 @@ const handleRemoveBoard = () => {
   background-color: var(--board-header-background-color);
   backdrop-filter: blur(4px);
   display: flex;
+  justify-content: space-between;
   align-items: center;
+}
+
+.board__header-left {
+  display: flex;
   gap: 20px;
+  align-items: center;
 }
 
 </style>
