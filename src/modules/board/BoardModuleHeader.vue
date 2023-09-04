@@ -30,7 +30,6 @@ const handleTitleBlur = (currentValue: string) => {
   store.dispatch("board/UPDATE", {title: currentValue})
 }
 
-
 const handleRemoveBoard = () => {
   const conf = confirm("Are you sure?");
   if(!conf) return;
@@ -60,7 +59,7 @@ const handleRemoveBoard = () => {
 
 <style scoped>
 .board__header {
-  padding: 0 20px;
+  padding: 6px 20px;
   background-color: var(--board-header-background-color);
   backdrop-filter: blur(4px);
   display: flex;

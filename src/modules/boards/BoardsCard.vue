@@ -34,12 +34,8 @@ const handleDelete = (e) => {
 <template>
   <Card @click='handleRedirect' class='card'>
     <div class='card__content'>
-      <Typography :text='board._id'/>
       <Typography :text='board.title' :variant='"title"'/>
-      <div class='card__content-wrap'>
-        <Typography text='items:'/>
-        <Typography :text='board?.items?.length' :variant='"sm"'/>
-      </div>
+      <Typography :text='board.id'/>
     </div>
     <div class='card__actions'>
       <ButtonIcon @click='handleDelete'>
@@ -65,15 +61,10 @@ const handleDelete = (e) => {
   background: linear-gradient(151deg, rgba(241,242,244,1) 34%, rgba(215,209,209,1) 74%, rgba(215,215,215,1) 100%);
 }
 
-
 .card__content {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-}
-
-.card__content-wrap {
-  display: flex;
-  align-items: baseline;
+  justify-content: space-between;
 }
 </style>

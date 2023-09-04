@@ -50,8 +50,8 @@ const classOptions = `typography ${variant} ${uppercase && "uppercase"}`;
 
 .typography.body {
   font-size: 14px;
-
 }
+
 .typography.sm {
   font-size: 12px;
 }

@@ -1,8 +1,9 @@
 <script setup lang='ts'>
-import BoardsCreate from '@/modules/boards/BoardsCreate.vue'
-import BoardsContent from '@/modules/boards/BoardsContent.vue'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
+import BoardsCreate from '@/modules/boards/BoardsCreate.vue'
+import BoardsContent from '@/modules/boards/BoardsContent.vue'
+import Typography from '@/components/Typography.vue'
 
 const store = useStore();
 
@@ -13,10 +14,15 @@ const accessedBoards = computed(() => store.getters['boards/getAccessedBoards'])
 
 <template>
   <div class='container'>
+    <Typography
+      v-if='!ownerBoards.length && !accessedBoards.length'
+      text='Create new board'
+      variant='title'
+      class='notify'
+    />
     <BoardsCreate/>
-    <BoardsContent :boards='ownerBoards'/>
-    <br/>
-    <BoardsContent :boards='accessedBoards'/>
+    <BoardsContent :boards='ownerBoards' title='Your boards'/>
+    <BoardsContent :boards='accessedBoards' title='Other boards'/>
   </div>
 </template>
 
@@ -25,7 +31,13 @@ const accessedBoards = computed(() => store.getters['boards/getAccessedBoards'])
   display: flex;
   flex-direction: column;
   padding: 20px;
+  min-height: 100%;
   max-height: 100%;
   overflow: auto;
+  flex-grow: 1;
+}
+
+.notify {
+  align-self: center;
 }
 </style>

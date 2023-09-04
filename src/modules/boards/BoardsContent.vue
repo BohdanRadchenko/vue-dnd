@@ -1,23 +1,29 @@
 <script  lang='ts' setup=''>
 import BoardsCard from '@/modules/boards/BoardsCard.vue'
+import Typography from '@/components/Typography.vue'
 import { IBoard } from '@/interfaces'
 
 interface IBoardsContentProps {
-  boards: IBoard[]
+  boards: IBoard[];
+  title: string;
 }
 
 const props = withDefaults(defineProps<IBoardsContentProps>(), {
   boards: [],
+  title: "",
 })
 </script>
 
 <template>
-  <div class='wrapper' v-if='props.boards.length'>
-    <BoardsCard
-      v-for='board in props.boards'
-      :key='board.id'
-      :board='board'
-    />
+  <div  v-if='props.boards.length'>
+    <Typography :text='props.title' variant='title'/>
+    <div class='wrapper'>
+      <BoardsCard
+        v-for='board in props.boards'
+        :key='board.id'
+        :board='board'
+      />
+    </div>
   </div>
 </template>
 
