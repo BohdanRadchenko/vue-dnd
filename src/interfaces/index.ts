@@ -5,10 +5,6 @@ export type {IList} from './IList';
 export type {IBoard} from './IBoard';
 export type {
   IStoreState,
-  ICardAddProps,
-  ICardRemoveProps,
-  IListRemoveProps,
-  IListRenameProps
 } from './IStore';
 export type {
   IBoardsState,
@@ -16,6 +12,7 @@ export type {
 } from './IBoardsStore'
 export type {
   IBoardState,
+  IBordListCreateProps,
 } from './IBoardStore'
 export type {
   IAuthState,

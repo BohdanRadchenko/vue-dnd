@@ -1,15 +1,17 @@
 <script setup lang='ts'>
-import { ref } from 'vue'
-import Card from '@/components/Card.vue'
+import { computed, ref } from 'vue'
 import Input from '@/components/Input.vue'
 import PlusIcon from '@/assets/icons/PlusIcon.vue'
 import XMarkIcon from '@/assets/icons/XMarkIcon.vue'
 import ButtonIcon from '@/components/ButtonIcon.vue'
-import Button from '@/components/Button.vue'
-
+import CheckIcon from '@/assets/icons/CheckIcon.vue'
 
 const isCreating = ref(false)
 const title = ref<string>("")
+
+const emit = defineEmits<{
+  (e: 'submit', value: string): void
+}>()
 
 const onCloseForm = () => {
   title.value = "";
@@ -17,72 +19,52 @@ const onCloseForm = () => {
 }
 
 const onSubmit = () => {
-  title.value = "";
+  emit('submit', title.value)
+  onCloseForm();
 }
+
+const ButtonInnerIcon = computed(() => !isCreating.value ? PlusIcon : XMarkIcon)
 
 </script>
 
 <template>
-  <Card v-if="isCreating">
   <form
-    class='form'
+    class="form"
     @keydown.esc="onCloseForm"
     @submit.prevent="onSubmit"
+    v-if='isCreating'
   >
     <Input
+      @blur='onCloseForm'
       v-model="title"
       placeholder="Enter list title..."
     />
-    <div class='form__actions'>
-      <Button
-        text='Add list'
-        type="submit"
-        class='form__actions-submit'
-      />
-      <ButtonIcon @click.prevent="onCloseForm">
-        <XMarkIcon/>
-      </ButtonIcon>
-    </div>
+    <ButtonIcon type='submit'><CheckIcon/></ButtonIcon>
   </form>
-  </Card>
-  <button
-    v-if="!isCreating"
-    @click.prevent="isCreating = true"
+  <ButtonIcon
+    @click.prevent="isCreating = !isCreating"
     type="button"
     class='btn'
   >
-    <PlusIcon/>
-    <span>Add another list</span>
-  </button>
+    <ButtonInnerIcon/>
+  </ButtonIcon>
 </template>
 
 <style scoped>
 .form {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.form__actions {
-  display: flex;
   align-items: center;
-  gap: 14px;
+  position: relative;
 }
 
-.btn {
-  outline: none;
-  border-color: transparent;
-  border-radius: 12px;
-  width: 100%;
-  height: 48px;
-  background-color: #00000014;
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 14px;
-  cursor: pointer;
+.form input {
+  padding-right: 36px;
 }
 
-
+.form button[type='submit'] {
+  position: absolute;
+  top: 0;
+  right: 4px;
+  transform: translateY(10%);
+}
 </style>

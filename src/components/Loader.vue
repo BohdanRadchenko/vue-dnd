@@ -7,7 +7,6 @@ const props = withDefaults(defineProps<ILoaderProps>(), {
   loading: false,
 });
 
-
 </script>
 
 <template>

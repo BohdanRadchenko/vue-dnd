@@ -3,7 +3,9 @@ import { Socket } from 'socket.io-client'
 import { SocketInstance } from '@/api/SocketInstance'
 import type { OptionsType } from '@/api/SocketInstance'
 import { AuthLocalService } from '@/api/services/auth-local.service'
-import type { IBoard, IUser } from '@/interfaces'
+import type { IBoard, IUser, IBordListCreateProps, IList } from '@/interfaces'
+
+type CallbackType<T> = (data: T) => void;
 
 export class BoardService extends AbstractService{
   private readonly path: string = "/board";
@@ -19,6 +21,11 @@ export class BoardService extends AbstractService{
       throw new Error("Socket is not defined!")
     }
     return this.socket;
+  }
+
+  public register<T>(ev: string, cb:CallbackType<T>) {
+    console.log(`start listening event: ${this.path} '${ev}'`)
+    this.instance.on(ev, cb);
   }
 
   public connect(boardId: IBoard['id']): Socket {
@@ -48,12 +55,27 @@ export class BoardService extends AbstractService{
     return this.socket;
   }
 
-  public update(data: unknown) {
-    return this.instance.emit("update", data)
+  public onConnected(cb: CallbackType<unknown>) {
+    this.register("connected", cb);
   }
 
-  public register() {
+  public onDisconnected(cb: CallbackType<unknown>) {
+    this.register("disconnected", cb);
+  }
 
 
+  public onUpdatedBoard(cb: CallbackType<IBoard>) {
+    this.register(this.board.onUpdatedBoard, cb);
+  }
+
+  public emitUpdateBoard(data: unknown) {
+    return this.instance.emit(this.board.emitUpdateBoard, data)
+  }
+
+  public onCreatedList(cb: CallbackType<IList>) {
+    this.register(this.board.onCreatedList, cb)
+  }
+  public emitCreateList(data: IBordListCreateProps) {
+    this.instance.emit(this.board.emitCreateList, data)
   }
 }

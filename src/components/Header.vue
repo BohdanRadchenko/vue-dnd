@@ -1,7 +1,7 @@
 <script setup lang='ts' >
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import { LOGIN_ROUTE } from '@/router/routes'
 import Typography from '@/components/Typography.vue'
 import ButtonIcon from '@/components/ButtonIcon.vue'

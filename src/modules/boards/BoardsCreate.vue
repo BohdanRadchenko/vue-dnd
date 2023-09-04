@@ -1,7 +1,7 @@
 <script setup lang='ts'>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
+import { useStore } from '@/store';
 import { BOARDS_PAGE_ROUTE_NAME } from '@/router/routes';
 import Card from '@/components/Card.vue'
 import Input from '@/components/Input.vue'

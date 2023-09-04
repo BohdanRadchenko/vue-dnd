@@ -1,24 +1,22 @@
 <script setup lang='ts'>
-import { computed, ref } from 'vue'
+import {debounce} from 'lodash'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import { BOARDS_ROUTE_NAME } from '@/router/routes'
 import ButtonIcon  from '@/components/ButtonIcon.vue'
+import TypographyInput  from '@/components/TypographyInput.vue'
 import { IBoard } from '@/interfaces'
 import DeleteIcon from '@/assets/icons/DeleteIcon.vue'
 import LeftIcon from '@/assets/icons/LeftIcon.vue'
-import BoardHeaderTitle from '@/modules/board/components/BoardHeaderTitle.vue'
+import BoardCreateColumn from '@/modules/board/components/BoardCreateColumn.vue'
 
 const store = useStore();
 const router = useRouter();
 const route = useRoute()
 
 const boardId: IBoard['id'] = route.params.boardId as IBoard['id'];
-const board = computed(() => store.getters['board/getBoard']);
-
-const onRename = (title: string) => {
-  store.dispatch("board/UPDATE", {title})
-}
+const board = computed(() => store.state.board.board);
 
 const redirectToBoards = () => {
   router.push({name: BOARDS_ROUTE_NAME});
@@ -31,6 +29,25 @@ const handleRemoveBoard = () => {
   redirectToBoards();
 }
 
+const handleCreateColumn = (title: string) => {
+  store.dispatch("board/CREATE_LIST", {title})
+}
+
+const dispatchChangeTitle = (title: string) => {
+  if(!title) return;
+  return store.dispatch("board/UPDATE", { title })
+}
+
+const dispatchChangeTitleDebounce = debounce(dispatchChangeTitle, 2000) as Function
+
+const title = computed({
+  get() {
+    return board.value.title;
+  },
+  set(value: string) {
+    dispatchChangeTitleDebounce(value);
+  }
+})
 </script>
 
 <template>
@@ -39,20 +56,26 @@ const handleRemoveBoard = () => {
       <ButtonIcon @click='redirectToBoards'>
         <LeftIcon/>
       </ButtonIcon>
-      <BoardHeaderTitle
-        :title='board.title'
-        :onRename='onRename'
+      <TypographyInput
+        v-model='title'
+        :placeholder='board.title'
+        typography='title'
+        variant='text'
+        class='input'
       />
     </div>
-   <ButtonIcon @click='handleRemoveBoard'>
-     <DeleteIcon/>
-   </ButtonIcon>
+    <div class='board__header-actions'>
+      <BoardCreateColumn @submit='handleCreateColumn'/>
+      <ButtonIcon @click='handleRemoveBoard'>
+        <DeleteIcon/>
+      </ButtonIcon>
+    </div>
   </section>
 </template>
 
 <style scoped>
 .board__header {
-  padding: 6px 20px;
+  padding: 2px 20px;
   background-color: var(--board-header-background-color);
   backdrop-filter: blur(4px);
   display: flex;
@@ -64,6 +87,12 @@ const handleRemoveBoard = () => {
   display: flex;
   gap: 20px;
   align-items: center;
+}
+
+.board__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px
 }
 
 </style>

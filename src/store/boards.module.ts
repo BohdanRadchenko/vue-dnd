@@ -1,11 +1,5 @@
 import type {
   IBoard,
-  ICard,
-  ICardAddProps,
-  ICardRemoveProps,
-  IList,
-  IListRemoveProps,
-  IListRenameProps,
   IBoardsState,
   IBoardCreateProps,
   IStoreState,
@@ -30,12 +24,6 @@ const mutations = {
       ...state.boards,
       isLoading: false
     }
-  },
-  SET_CURRENT_BOARD (state: IStoreState, {board}: {board: IBoard}) {
-    state.boards = {
-      ...state.boards,
-      currentBoard: board,
-    };
   },
   LOAD_BOARDS (state: IStoreState, {boards}: {boards: IBoard[]}) {
     state.boards = {
@@ -127,10 +115,6 @@ const actions = {
     try {
       commit("SET_LOADING_TRUE")
       const board = await api.boards.create(data);
-      commit({
-        type: 'SET_BOARD',
-        board,
-      });
       commit("SET_LOADING_FALSE")
       return Promise.resolve(board);
     } catch (ex) {
@@ -159,8 +143,6 @@ const actions = {
     try {
       commit("SET_LOADING_TRUE")
       const board = await api.boards.updateById(_id, rest);
-      commit({ type: 'SET_BOARD', board });
-      commit({ type: 'SET_CURRENT_BOARD', board });
       return Promise.resolve(board);
     } catch (ex) {
       console.error('BOARD_UPDATE_ACTION', ex.message);

@@ -1,79 +1,48 @@
 <script setup lang='ts'>
 import { ref } from 'vue'
 import TypographyInput from '@/components/TypographyInput.vue'
-import ButtonIcon from '@/components/ButtonIcon.vue'
-import CheckIcon from '@/assets/icons/CheckIcon.vue'
 
 interface IProps {
-  title: string;
-  onRename: (value: string) => void;
+  title?: string;
+  onAction: (value: string) => void;
 }
 
-const props = defineProps<IProps>()
+const props = withDefaults(defineProps<IProps>(), {
+  title: "",
+})
 
 const isEditing = ref<boolean>(false)
-const title = ref(props?.title || "")
+const title = ref<string>(props.title as string)
 
-const onRename = (currentValue: string) => {
+const handleReset = () => {
+  console.log('handleReset');
+  isEditing.value = false;
+  title.value = props.title;
+}
+
+const handleAction = () => {
   const prevTitle = props.title;
+  const currentValue = title.value;
   if(prevTitle === currentValue || !currentValue) {
     title.value = prevTitle;
     return;
   }
-  isEditing.value=false
-  props.onRename(currentValue);
-}
-
-const onFocus = () => {
-  isEditing.value=true
+  props.onAction(currentValue);
+  isEditing.value = false;
 }
 
 </script>
 
 <template>
- <div class='container'>
    <TypographyInput
      v-model='title'
-     :onBlur='onRename'
-     :onFocus='onFocus'
-     @keypress.esc='isEditing=false'
+     @blur='handleReset'
+     @focus='isEditing = true'
+     @keypress.esc='handleReset'
+     @keypress.enter='handleAction'
      :placeholder='props.title'
      typography='title'
      variant='text'
      class='input'
    />
-   <div
-     class='button-wrapper'
-     v-if="isEditing"
-   >
-    <ButtonIcon
-      @click='onRename'
-      class='button'
-    >
-      <CheckIcon/>
-    </ButtonIcon>
-   </div>
- </div>
 </template>
-
-<style scoped>
-.container {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-.input {
-  width: 100%;
-  padding-right: 34px;
-}
-
-.button-wrapper {
-  z-index: 1;
-  position: absolute;
-  top: 50%;
-  right: 2px;
-  transform: translateY(-50%);
-}
-
-</style>

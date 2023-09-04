@@ -1,6 +1,6 @@
 <script setup lang='ts' >
 import { computed, watchEffect } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import { useRoute, useRouter } from 'vue-router'
 import { IAuthLoginProps } from '@/interfaces'
 import { HOME_ROUTE, REGISTER_ROUTE } from '@/router/routes'
@@ -10,7 +10,7 @@ const store = useStore();
 const router = useRouter();
 const route = useRoute();
 
-const isAuth = computed(() => store.getters['auth/isAuth'])
+const isAuth = computed(() => store.state.auth.isAuth)
 
 watchEffect(() => {
   if(!isAuth.value) return;

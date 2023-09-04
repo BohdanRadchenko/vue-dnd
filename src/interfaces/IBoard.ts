@@ -6,5 +6,5 @@ export interface IBoard extends IEntity {
   title: string;
   isOwner: boolean;
   owner: IUser['_id'];
-  items: IList[];
+  lists: IList[];
 }

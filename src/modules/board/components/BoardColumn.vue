@@ -1,7 +1,8 @@
 <script setup lang='ts' >
-import { computed } from 'vue'
+import { ref } from 'vue'
 import Draggable from 'vuedraggable'
 import { useRoute } from 'vue-router'
+import {cloneDeep} from 'lodash';
 import { IBoard } from '@/interfaces'
 import Card from '@/components/Card.vue'
 import BoardCard from '@/modules/board/components/BoardCard.vue'
@@ -19,27 +20,45 @@ const route = useRoute()
 const boardId: IBoard['id'] = route.params.boardId as IBoard['id'];
 
 const props = defineProps<IBoardColumnProps>()
+const emit = defineEmits<{
+  (e: 'reorder-commit', value: any): void
+  (e: 'change', values: any): void
+}>()
 
-const cards = computed({
-  get() {
-    return props.items.cards;
-  },
-  set(value) {
-    console.log('value', value);
-  },
-})
+
+const cards = ref(props.items.cards || [])
 
 const handleRename = () => {
 
 }
 
+const onReorderCards = (commit: any) => {
+  console.log('commit', commit);
+  const cloned: Array<unknown> = cloneDeep(props.items?.cards || []);
+  const cardsWithOrder = [
+    ...cloned?.map(({id, description}, index) => ({
+      id,
+      description,
+      position: index * 1000 + 1000,
+    })),
+  ];
+
+  emit('reorder-change', {
+    id: props?.items?.id,
+    cards: cardsWithOrder,
+  });
+}
+
+const onReorderEnds = (value: any) => {
+  console.log('onReorderEnds values', value);
+}
 
 </script>
 
 <template>
   <Card class='board__column'>
     <div class='board__column-header'>
-      <BoardHeaderTitle :title='props.items' :onRename='handleRename'/>
+      <BoardHeaderTitle :title='props.items.title' :onAction='handleRename'/>
     </div>
     <Draggable
       v-model='cards'
@@ -47,6 +66,8 @@ const handleRename = () => {
       :group='boardId'
       class='board__column-main'
       tag='ul'
+      @change="onReorderCards"
+      @end="onReorderEnds"
     >
       <template #item="{ element: card }">
         <li>

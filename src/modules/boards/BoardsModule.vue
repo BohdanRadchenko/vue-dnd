@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import BoardsCreate from '@/modules/boards/BoardsCreate.vue'
 import BoardsContent from '@/modules/boards/BoardsContent.vue'
 import Typography from '@/components/Typography.vue'

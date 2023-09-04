@@ -1,7 +1,7 @@
 <script setup lang='ts' >
-import { onMounted, computed, ref, onUnmounted, watchEffect } from 'vue'
+import { computed, onUnmounted, onBeforeMount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import {useStore} from 'vuex';
+import {useStore} from '@/store';
 import type { IBoard } from '@/interfaces'
 import { BOARDS_ROUTE_NAME } from '@/router/routes'
 import { useChangeMainBackground } from '@/hooks'
@@ -19,44 +19,21 @@ const redirectToBoards = () => {
   router.push({name: BOARDS_ROUTE_NAME})
 };
 
-const board = computed(() => store.getters['board/getBoard']);
-const isLoading = computed(() => store.getters['board/isLoading']);
+const board = computed(() => store.state.board.board);
+const isLoading = computed(() => store.state.board.isLoading);
 
 const isShowContent = computed(() => !!board.value && !isLoading.value)
 
-const title = ref(board?.value?.title || "")
-
-watchEffect(() => {
-  title.value = board?.value?.title || ""
-})
-
-// const handleRemoveBoard = () => {
-//   const conf = confirm("Are you sure?");
-//   if(!conf) return;
-//   store.dispatch("boards/DELETE", boardId)
-//   redirectToBoards();
-// }
-//
-// const handleTitleBlur = (currentValue: string) => {
-//   const prevTitle = board?.value?.title;
-//   if(prevTitle === currentValue || !currentValue) return;
-//   store.dispatch(
-//     "boards/UPDATE",
-//     { _id: boardId, title: currentValue }
-//   )
-// }
-
-onMounted(  () => {
+onBeforeMount(  () => {
   store.dispatch("board/GET", boardId)
     .then(() => store.dispatch("board/CONNECT", boardId))
     .catch(redirectToBoards);
 })
 
 onUnmounted(() => {
-  store.commit("board/SET_BOARD", {board: null})
+  store.commit("board/SET_BOARD", null)
   store.dispatch("board/DISCONNECT")
 })
-
 </script>
 
 <template>

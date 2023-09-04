@@ -1,8 +1,12 @@
 <script  setup lang='ts'>
-import { computed, onMounted, onUpdated, ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useStore } from '@/store'
 import Draggable from 'vuedraggable'
 import BoardColumn from '@/modules/board/components/BoardColumn.vue'
-import BoardCreateColumn from '@/modules/board/components/BoardCreateColumn.vue'
+
+const store = useStore();
+
+const board = computed(() => store.state.board.board);
 
 const getCard = (index) => ({
   id: Date.now() + index * 44,
@@ -22,31 +26,56 @@ const getList = (index) => ({
   ]
 })
 
-const board = ({
-  title: "title",
-  id: 123123,
-  lists: [getList(1), getList(2), getList(3), getList(4), getList(5)]
+const getList1 = (index) => ({
+  id: Date.now() + index * 33,
+  title: 'list title ' + index,
+  cards: [
+    getCard(1), getCard(2), getCard(3), getCard(4), getCard(5),
+  ]
 })
 
+const boardMock = ({
+  title: "title",
+  id: 123123,
+  // lists: [getList(1), getList(2), getList(3), getList(4), getList(5)]
+  // lists: [getList(1)]
+  // lists: []
+  lists: [getList1(1), getList1(2)]
+})
+
+const emit = defineEmits<{
+  (e: 'reorder-commit', value: any): void
+  (e: 'change', values: any): void
+}>()
+
+// const lists = ref(board.lists);
 
 const columns = computed({
   get() {
-    return board.lists
+    return board.value?.lists
   },
   set(value) {
     console.log('value', value);
+    // lists.value = value;
   },
 })
 
+const onReorderLists = (value: any) => {
+  console.log('values', value);
+}
 
-const containerRef = ref()
-const buttonRef = ref()
+const onReorderEnds = (value: any) => {
+  console.log('values', value);
+}
 
-onMounted(() => {
-  if(!containerRef.value || !buttonRef.value) return;
-  containerRef.value.targetDomElement.appendChild(buttonRef.value)
-})
+const onReorderChangeCards = (data) => {
+  console.log('data', data);
+}
 
+const onReorderCommitCards = () => {
+
+
+}
 </script>
 
 <template>
@@ -55,17 +84,19 @@ onMounted(() => {
     class='board__list'
     item-key='id'
     tag='ul'
-    ref='containerRef'
+    @change="onReorderLists"
+    @end="onReorderEnds"
   >
     <template #item="{ element: column }">
       <li class='board__list-item'>
-        <BoardColumn :items='column'/>
+        <BoardColumn
+          :items='column'
+          @reorder-change="onReorderChangeCards"
+          @reorder-commit="onReorderCommitCards"
+        />
       </li>
     </template>
   </Draggable>
-  <div ref='buttonRef' class='board__list-action'>
-    <BoardCreateColumn ref='buttonRef'/>
-  </div>
 </template>
 
 <style scoped>

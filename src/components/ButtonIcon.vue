@@ -16,6 +16,8 @@ import ButtonBase from '@/components/ButtonBase.vue'
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid var(--ds-shadow-raised-1);
+  box-shadow: var(--ds-shadow-raised-1);
 }
 
 

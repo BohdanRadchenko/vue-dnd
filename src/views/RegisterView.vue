@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { computed, watchEffect } from 'vue'
-import { useStore } from 'vuex'
+import { useStore } from '@/store'
 import { useRouter, useRoute } from 'vue-router'
 import { IAuthLoginProps } from '@/interfaces'
 import { HOME_ROUTE, LOGIN_ROUTE } from '@/router/routes'
@@ -10,7 +10,7 @@ const store = useStore()
 const router = useRouter()
 const route = useRoute()
 
-const isAuth = computed(() => store.getters['auth/isAuth'])
+const isAuth = computed(() => store.state.auth.isAuth)
 
 watchEffect(() => {
   if ( !isAuth.value ) return
@@ -19,7 +19,7 @@ watchEffect(() => {
 })
 
 const onSubmit = (data: IAuthLoginProps) => {
-  store.dispatch('auth/REGISTER', data)
+  store.dispatch("auth/REGISTER", data)
 }
 
 </script>
