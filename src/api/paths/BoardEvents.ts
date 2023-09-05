@@ -1,19 +1,35 @@
 export class BoardsEvent {
 
-  public get onUpdatedBoard() {
-    return 'EMIT_UPDATED_BOARD'
+  public get onBoardUpdated() {
+    return 'BOARD_UPDATED'
   }
 
-  public get emitUpdateBoard() {
-    return 'EVENT_UPDATE_BOARD'
+  public get emitBoardUpdate() {
+    return 'BOARD_UPDATE'
   }
 
-  public get onCreatedList() {
-    return 'EMIT_CREATED_LIST'
+  public get onListCreated() {
+    return 'LIST_CREATED'
   }
 
-  public get emitCreateList() {
-    return 'EVENT_CREATE_LIST'
+  public get emitListCreate() {
+    return 'LIST_CREATE'
+  }
+
+  public get onListDeleted() {
+    return 'LIST_DELETED'
+  }
+
+  public get emitListDeleted() {
+    return 'LIST_DELETE'
+  }
+
+  public get onListUpdated() {
+    return 'LIST_UPDATED'
+  }
+
+  public get emitListUpdate() {
+    return 'LIST_UPDATE'
   }
 
 }

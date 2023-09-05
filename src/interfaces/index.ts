@@ -13,6 +13,7 @@ export type {
 export type {
   IBoardState,
   IBordListCreateProps,
+  IBordListDeleteProps,
 } from './IBoardStore'
 export type {
   IAuthState,

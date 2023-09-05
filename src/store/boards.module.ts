@@ -31,8 +31,8 @@ const mutations = {
       boards
     }
   },
-  DELETE_BOARD(state: IStoreState, { boardId }: {boardId: IBoard['id']}) {
-    state.boards.boards = state.boards.boards.filter(({id}) => boardId !== id);
+  DELETE_BOARD(state: IStoreState, { boardId }: {boardId: IBoard['_id']}) {
+    state.boards.boards = state.boards.boards.filter(({_id}) => boardId !== _id);
   },
   // createBoardList(state: IBoardState, boardId: IBoard['id']) {
   //   const length = state.boardsMap.get(boardId)?.items?.length + 1;

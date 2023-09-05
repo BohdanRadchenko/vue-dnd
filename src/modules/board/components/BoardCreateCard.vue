@@ -1,10 +1,16 @@
 <script setup lang='ts'>
 import { ref } from 'vue'
+import { onClickOutside } from '@vueuse/core'
 import PlusIcon from '@/assets/icons/PlusIcon.vue'
 import XMarkIcon from '@/assets/icons/XMarkIcon.vue'
 import ButtonIcon from '@/components/ButtonIcon.vue'
 import Button from '@/components/Button.vue'
 
+const emit = defineEmits<{
+  (e: 'create', value: string): void
+}>()
+
+const containerRef = ref();
 const isCreating = ref(false)
 const description = ref<string>("")
 
@@ -14,44 +20,49 @@ const onCloseForm = () => {
 }
 
 const onSubmit = () => {
-  description.value = "";
+  if(!description.value.length) return;
+  emit("create", description.value)
+  onCloseForm();
 }
 
+onClickOutside(containerRef, onCloseForm)
 </script>
 
 <template>
-  <form
-    class='form'
-    v-if="isCreating"
-    @keydown.esc="onCloseForm"
-    @submit.prevent="onSubmit"
-  >
-    <textarea
+  <div ref='containerRef'>
+    <form
+      class='form'
+      v-if="isCreating"
       @keydown.esc="onCloseForm"
-      v-model="description"
-      class='form__input'
-      rows="3"
-      placeholder="Enter a title for this card..."
-    />
-    <div class='form__actions'>
-      <Button
-        text='Add list'
-        type="submit"
-        class='form__actions-submit'
+      @submit.prevent="onSubmit"
+    >
+      <textarea
+        @keydown.esc="onCloseForm"
+        v-model="description"
+        class='form__input'
+        rows="4"
+        placeholder="Enter a title for this card..."
       />
-      <ButtonIcon @click.prevent="onCloseForm">
-        <XMarkIcon/>
-      </ButtonIcon>
-    </div>
-  </form>
-  <button
-    v-if="!isCreating"
-    @click.prevent="isCreating = true"
-    class='btn'
-  >
-    <PlusIcon/>
-    <span>Add a card</span>
-  </button>
+      <div class='form__actions'>
+        <Button
+          text='Add list'
+          type="submit"
+          class='form__actions-submit'
+        />
+        <ButtonIcon @click.prevent="onCloseForm">
+          <XMarkIcon/>
+        </ButtonIcon>
+      </div>
+    </form>
+    <button
+      v-if="!isCreating"
+      @click.prevent="isCreating = true"
+      class='btn'
+    >
+      <PlusIcon/>
+      <span>Add a card</span>
+    </button>
+  </div>
 </template>
 
 <style scoped>

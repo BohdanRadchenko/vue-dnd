@@ -1,8 +1,8 @@
 import type { ICard } from '@/interfaces/ICard'
+import { IEntity } from '@/interfaces/IEntity'
 
-export interface IList {
-  id: number;
+export interface IList extends IEntity {
   title: string;
-  position: number;
-  items: ICard[];
+  pos: number;
+  cards: ICard[];
 }

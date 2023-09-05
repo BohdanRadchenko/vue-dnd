@@ -19,14 +19,14 @@ const {board} = defineProps<IBoardCardProps>()
 
 const handleRedirect = (e) => {
   e.stopPropagation();
-  router.push({name: BOARDS_PAGE_ROUTE_NAME, params: {boardId: board.id}})
+  router.push({name: BOARDS_PAGE_ROUTE_NAME, params: {boardId: board._id}})
 }
 
 const handleDelete = (e) => {
   e.stopPropagation();
   const conf = confirm("Are you sure?");
   if(!conf) return;
-  store.dispatch("boards/DELETE", board.id)
+  store.dispatch("boards/DELETE", board._id)
 }
 
 </script>
@@ -35,7 +35,7 @@ const handleDelete = (e) => {
   <Card @click='handleRedirect' class='card'>
     <div class='card__content'>
       <Typography :text='board.title' :variant='"title"'/>
-      <Typography :text='board.id'/>
+      <Typography :text='board._id'/>
     </div>
     <div class='card__actions'>
       <ButtonIcon @click='handleDelete'>

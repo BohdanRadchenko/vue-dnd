@@ -8,55 +8,28 @@ const store = useStore();
 
 const board = computed(() => store.state.board.board);
 
-const getCard = (index) => ({
-  id: Date.now() + index * 44,
-  description: Date.now() + index * 44 + " card description",
-
-})
-
-const getList = (index) => ({
-  id: Date.now() + index * 33,
-  title: 'list title ' + index,
-  cards: [
-    getCard(1), getCard(2), getCard(3), getCard(4), getCard(5),
-    getCard(11), getCard(22), getCard(33), getCard(44), getCard(55),
-    getCard(111), getCard(222), getCard(333), getCard(444), getCard(555),
-    getCard(1111), getCard(2222), getCard(3333), getCard(4444), getCard(5555),
-    getCard(11111), getCard(22222), getCard(33333), getCard(44444), getCard(55555),
-  ]
-})
-
-const getList1 = (index) => ({
-  id: Date.now() + index * 33,
-  title: 'list title ' + index,
-  cards: [
-    getCard(1), getCard(2), getCard(3), getCard(4), getCard(5),
-  ]
-})
-
-const boardMock = ({
-  title: "title",
-  id: 123123,
-  // lists: [getList(1), getList(2), getList(3), getList(4), getList(5)]
-  // lists: [getList(1)]
-  // lists: []
-  lists: [getList1(1), getList1(2)]
-})
-
-const emit = defineEmits<{
-  (e: 'reorder-commit', value: any): void
-  (e: 'change', values: any): void
-}>()
-
-// const lists = ref(board.lists);
-
 const columns = computed({
   get() {
-    return board.value?.lists
+    return board.value.lists
   },
   set(value) {
-    console.log('value', value);
-    // lists.value = value;
+    console.log('columns value', value);
+
+    console.log('commit', commit);
+    // const cloned: Array<unknown> = cloneDeep(props.items?.cards || []);
+    // const cardsWithOrder = [
+    //   ...cloned?.map(({id}, index) => ({
+    //     id,
+    //     position: index * 1000 + 1000,
+    //   })),
+    // ];
+
+    // console.log('cardsWithOrder', cardsWithOrder);
+
+    // emit('reorder-change', {
+    //   id: props?.items?.id,
+    //   cards: cardsWithOrder,
+    // });
   },
 })
 
@@ -74,7 +47,6 @@ const onReorderChangeCards = (data) => {
 
 const onReorderCommitCards = () => {
 
-
 }
 </script>
 
@@ -89,11 +61,7 @@ const onReorderCommitCards = () => {
   >
     <template #item="{ element: column }">
       <li class='board__list-item'>
-        <BoardColumn
-          :items='column'
-          @reorder-change="onReorderChangeCards"
-          @reorder-commit="onReorderCommitCards"
-        />
+        <BoardColumn :item='column' />
       </li>
     </template>
   </Draggable>

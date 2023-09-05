@@ -11,6 +11,7 @@ import ButtonBase from '@/components/ButtonBase.vue'
 
 <style scoped>
 .button-icon {
+  flex-shrink: 0;
   width: 32px;
   height: 32px;
   display: flex;

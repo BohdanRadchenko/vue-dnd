@@ -19,7 +19,7 @@ const handleCreate = () => {
     "boards/CREATE",
     { title: title.value || "New board" }
   ).then(board => {
-    router.push({ name: BOARDS_PAGE_ROUTE_NAME, params: { boardId: board.id } })
+    router.push({ name: BOARDS_PAGE_ROUTE_NAME, params: { boardId: board._id } })
   }).finally(() => {
     title.value = ""
   })

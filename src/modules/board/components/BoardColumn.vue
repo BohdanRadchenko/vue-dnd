@@ -1,22 +1,24 @@
 <script setup lang='ts' >
-import { ref } from 'vue'
+import { computed,} from 'vue'
 import Draggable from 'vuedraggable'
 import { useRoute } from 'vue-router'
 import {cloneDeep} from 'lodash';
-import { IBoard } from '@/interfaces'
+import { useStore } from '@/store'
+import { IBoard, ICard, IList } from '@/interfaces'
 import Card from '@/components/Card.vue'
 import BoardCard from '@/modules/board/components/BoardCard.vue'
 import BoardCreateCard from '@/modules/board/components/BoardCreateCard.vue'
 import BoardHeaderTitle from '@/modules/board/components/BoardHeaderTitle.vue'
+import ButtonIcon  from '@/components/ButtonIcon.vue'
+import DeleteIcon from '@/assets/icons/DeleteIcon.vue'
 
 interface IBoardColumnProps {
-  titleValue?: string;
-  createValue?: string;
-  onChangeTitle?: (value: string) => void;
-  items: {id: number, title: string, cards: {}[]}
+  item: IList
 }
 
+const store = useStore();
 const route = useRoute()
+
 const boardId: IBoard['id'] = route.params.boardId as IBoard['id'];
 
 const props = defineProps<IBoardColumnProps>()
@@ -25,32 +27,53 @@ const emit = defineEmits<{
   (e: 'change', values: any): void
 }>()
 
-
-const cards = ref(props.items.cards || [])
-
-const handleRename = () => {
-
+const handleDeleteList = () => {
+  store.dispatch('board/LIST_DELETE', {listId: props.item._id})
 }
 
-const onReorderCards = (commit: any) => {
-  console.log('commit', commit);
-  const cloned: Array<unknown> = cloneDeep(props.items?.cards || []);
-  const cardsWithOrder = [
-    ...cloned?.map(({id, description}, index) => ({
-      id,
-      description,
-      position: index * 1000 + 1000,
-    })),
-  ];
+const cards = computed({
+  get() {
+    return props.item.cards;
+  },
+  set(value) {
+    store.dispatch(
+      'board/LIST_UPDATE',
+      {
+        _id: props.item._id,
+        cards: value
+      }
+    )
+  },
+})
 
-  emit('reorder-change', {
-    id: props?.items?.id,
-    cards: cardsWithOrder,
-  });
+const handleRename = (title) => {
+  store.dispatch(
+    'board/LIST_UPDATE',
+    { _id: props.item._id, title }
+  )
 }
 
-const onReorderEnds = (value: any) => {
-  console.log('onReorderEnds values', value);
+const handleCreateCard = (description) => {
+  store.dispatch(
+    'board/LIST_UPDATE',
+    {
+      _id: props.item._id,
+      cards: [
+        ...cards.value,
+        {_id: Date.now(), description}
+      ]
+    }
+  )
+}
+
+const handleDeleteCard = (id: ICard['_id']) => {
+  store.dispatch(
+    'board/LIST_UPDATE',
+    {
+      _id: props.item._id,
+      cards: [...cards.value].filter(({_id}) => id !== _id)
+    }
+  )
 }
 
 </script>
@@ -58,7 +81,10 @@ const onReorderEnds = (value: any) => {
 <template>
   <Card class='board__column'>
     <div class='board__column-header'>
-      <BoardHeaderTitle :title='props.items.title' :onAction='handleRename'/>
+      <BoardHeaderTitle :title='props.item.title' :onAction='handleRename'/>
+      <ButtonIcon @click='handleDeleteList'>
+        <DeleteIcon/>
+      </ButtonIcon>
     </div>
     <Draggable
       v-model='cards'
@@ -66,17 +92,20 @@ const onReorderEnds = (value: any) => {
       :group='boardId'
       class='board__column-main'
       tag='ul'
-      @change="onReorderCards"
-      @end="onReorderEnds"
     >
       <template #item="{ element: card }">
         <li>
-          <BoardCard :card='card'/>
+          <BoardCard
+            :card='card'
+            @delete='handleDeleteCard'
+          />
         </li>
       </template>
     </Draggable>
     <div class='board__column-footer'>
-      <BoardCreateCard/>
+      <BoardCreateCard
+        @create='handleCreateCard'
+      />
     </div>
   </Card>
 </template>
@@ -94,7 +123,10 @@ const onReorderEnds = (value: any) => {
 }
 
 .board__column-header {
-  padding: 4px 0 0;
+  padding: 8px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .board__column-main {

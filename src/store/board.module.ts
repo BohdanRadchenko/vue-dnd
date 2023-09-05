@@ -1,9 +1,13 @@
 import type {
   IBoard,
   IBoardState,
+  IBordListCreateProps,
+  IList,
+  IBordListDeleteProps
 } from '@/interfaces'
 import api from '@/api'
-import { debounce } from 'lodash'
+import router from '@/router'
+import { BOARDS_ROUTE_NAME } from '@/router/routes'
 
 const state: IBoardState = {
   board: null,
@@ -23,6 +27,32 @@ const mutations = {
     const prevState = state.board ?? {};
     state.board = {...prevState, ...board};
     return state;
+  },
+  LIST_ADD (state: IBoardState, list: IList) {
+    state.board?.lists.push(list);
+    return state;
+  },
+  LIST_DELETE (state: IBoardState, listId: IList['id']) {
+    const prevState = state.board ?? {} as IBoard;
+    state.board = {
+      ...prevState,
+      lists: [...prevState.lists].filter(({_id}) => _id !== listId)
+    }
+    return state;
+  },
+  LIST_UPDATE (state: IBoardState, data: IList) {
+    const prevState = state.board ?? {} as IBoard;
+
+    state.board = {
+      ...prevState,
+      lists: [...prevState.lists]
+        .map((list) => {
+        if(list._id !== data._id) return list;
+        return  { ...list, ...data }
+      })
+        .sort((a, b) => a.pos - b.pos)
+    }
+    return state;
   }
 }
 
@@ -34,7 +64,7 @@ const actions = {
       commit('SET_BOARD', board);
       return Promise.resolve(board);
     } catch (ex) {
-      console.error('BOARDS_GET_ACTION', ex.message);
+      console.error('BOARD_GET_ACTION', ex.message);
       return Promise.reject(ex);
     } finally {
       commit("SET_LOADING_FALSE")
@@ -45,15 +75,30 @@ const actions = {
     api.board.onConnected((connected) => {
       console.log('connected', connected);
     })
-    api.board.onDisconnected((disconnected) => {
-      console.log('disconnected', disconnected);
+    api.board.onDisconnected(() => {
+      console.log('disconnected');
+      api.board.disconnect();
+      router.push({ name: BOARDS_ROUTE_NAME })
     })
-    api.board.onUpdatedBoard((board) => {
+    api.board.onBoardUpdated((board) => {
       console.log('updated board => board', board);
       commit('SET_BOARD', board);
     })
-    api.board.onCreatedList((list) => {
+    api.board.onListCreated((list) => {
       console.log('crated list => data', list);
+      commit("LIST_ADD", list);
+    })
+    api.board.onListDeleted((data: IBordListDeleteProps) => {
+      console.log('deleted list => _id:', data);
+      commit("LIST_DELETE", data.listId);
+    })
+    api.board.onListDeleted((data: IBordListDeleteProps) => {
+      console.log('deleted list => _id:', data);
+      commit("LIST_DELETE", data.listId);
+    })
+    api.board.onListUpdated((data: any) => {
+      console.log('updated list => data:', data);
+      commit("LIST_UPDATE", data);
     })
   },
   DISCONNECT () {
@@ -61,26 +106,39 @@ const actions = {
   },
   UPDATE ({commit}, data: IBoard) {
     try {
-      api.board.emitUpdateBoard(data)
+      api.board.emitBoardUpdate(data)
       commit('SET_BOARD', data)
     } catch (ex) {
-      console.log('ex', ex);
+      console.error('UPDATE_ACTION', ex);
     }
   },
-  CREATE_LIST ({commit, state }, title: string) {
-    console.log('CREATE_LIST => state', state);
-    // const lists = state.board.board.lists
-    // console.log('lists', lists);
-    // const position = lists.length * 1000 + 1000;
-    // console.log('position', position);
-    // console.log('position', position);
-    // api.board.emitCreateList({title, position: state.board.board.lists.length * 1000 + 1000})
+  LIST_CREATE ({ commit }, data: IBordListCreateProps) {
+    try {
+      api.board.emitListCreate(data)
+    } catch (ex) {
+      console.error('LIST_CREATE', ex.message);
+    }
+  },
+  LIST_DELETE ({ commit }, data: IBordListDeleteProps) {
+    try {
+      api.board.emitListDelete(data)
+      commit("LIST_DELETE", data.listId);
+    } catch (ex) {
+      console.error('LIST_DELETE', ex.message);
+    }
+  },
+  LIST_UPDATE ({ commit }, data: IList) {
+    try {
+      api.board.emitListUpdate(data)
+      commit("LIST_UPDATE", data);
+    } catch (ex) {
+      console.error('LIST_UPDATE', ex.message);
+    }
   },
 }
 
 const getters = {
   isLoading: ({ isLoading }: IBoardState): boolean => isLoading,
-  getBoard: ({ board }: IBoardState): IBoard | null => board,
 }
 
 

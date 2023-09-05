@@ -15,7 +15,6 @@ const isEditing = ref<boolean>(false)
 const title = ref<string>(props.title as string)
 
 const handleReset = () => {
-  console.log('handleReset');
   isEditing.value = false;
   title.value = props.title;
 }

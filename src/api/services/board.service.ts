@@ -3,7 +3,7 @@ import { Socket } from 'socket.io-client'
 import { SocketInstance } from '@/api/SocketInstance'
 import type { OptionsType } from '@/api/SocketInstance'
 import { AuthLocalService } from '@/api/services/auth-local.service'
-import type { IBoard, IUser, IBordListCreateProps, IList } from '@/interfaces'
+import type { IBoard, IUser, IBordListCreateProps, IList, IBordListDeleteProps } from '@/interfaces'
 
 type CallbackType<T> = (data: T) => void;
 
@@ -58,24 +58,60 @@ export class BoardService extends AbstractService{
   public onConnected(cb: CallbackType<unknown>) {
     this.register("connected", cb);
   }
-
   public onDisconnected(cb: CallbackType<unknown>) {
     this.register("disconnected", cb);
   }
 
+  public onBoardUpdated(cb: CallbackType<IBoard>) {
+    this.register(this.board.onBoardUpdated, cb);
+  }
+  public emitBoardUpdate(data: unknown) {
+    return this.instance.emit(
+      this.board.emitBoardUpdate,
+      {
+        event: this.board.emitBoardUpdate,
+        ...data,
+      }
 
-  public onUpdatedBoard(cb: CallbackType<IBoard>) {
-    this.register(this.board.onUpdatedBoard, cb);
+    )
   }
 
-  public emitUpdateBoard(data: unknown) {
-    return this.instance.emit(this.board.emitUpdateBoard, data)
+  public onListCreated(cb: CallbackType<IList>) {
+    this.register(this.board.onListCreated, cb)
+  }
+  public emitListCreate(data: IBordListCreateProps) {
+    this.instance.emit(
+      this.board.emitListCreate,
+      {
+        event: this.board.emitListCreate,
+        ...data
+      }
+    )
   }
 
-  public onCreatedList(cb: CallbackType<IList>) {
-    this.register(this.board.onCreatedList, cb)
+  public onListDeleted(cb: CallbackType<IBordListDeleteProps>) {
+    this.register(this.board.onListDeleted, cb)
   }
-  public emitCreateList(data: IBordListCreateProps) {
-    this.instance.emit(this.board.emitCreateList, data)
+  public emitListDelete(data: IBordListDeleteProps) {
+    this.instance.emit(
+      this.board.emitListDeleted,
+      {
+        event: this.board.emitListDeleted,
+        ...data,
+      }
+    )
+  }
+
+  public onListUpdated(cb: CallbackType<any>) {
+    this.register(this.board.onListUpdated, cb)
+  }
+  public emitListUpdate(data: any) {
+    this.instance.emit(
+      this.board.emitListUpdate,
+      {
+        event: this.board.emitListUpdate,
+        ...data,
+      }
+    )
   }
 }

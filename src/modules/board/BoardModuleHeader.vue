@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import {debounce} from 'lodash'
+import {debounce, DebouncedFunc} from 'lodash'
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from '@/store'
@@ -30,7 +30,7 @@ const handleRemoveBoard = () => {
 }
 
 const handleCreateColumn = (title: string) => {
-  store.dispatch("board/CREATE_LIST", {title})
+  store.dispatch("board/LIST_CREATE", {title})
 }
 
 const dispatchChangeTitle = (title: string) => {
@@ -38,7 +38,12 @@ const dispatchChangeTitle = (title: string) => {
   return store.dispatch("board/UPDATE", { title })
 }
 
-const dispatchChangeTitleDebounce = debounce(dispatchChangeTitle, 2000) as Function
+const dispatchChangeTitleDebounce = debounce(dispatchChangeTitle, 2000) as Function & DebouncedFunc
+
+const handleTitleEnter = (target: HTMLInputElement) => {
+  dispatchChangeTitleDebounce.flush.call(target.value)
+  target.blur();
+}
 
 const title = computed({
   get() {
@@ -57,7 +62,10 @@ const title = computed({
         <LeftIcon/>
       </ButtonIcon>
       <TypographyInput
+        ref='titleRef'
         v-model='title'
+        @blur='dispatchChangeTitleDebounce.cancel.call("")'
+        @keypress.enter='handleTitleEnter($event.target)'
         :placeholder='board.title'
         typography='title'
         variant='text'
