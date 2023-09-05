@@ -1,8 +1,9 @@
 <script  setup lang='ts'>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useStore } from '@/store'
 import Draggable from 'vuedraggable'
 import BoardColumn from '@/modules/board/components/BoardColumn.vue'
+import type { IList } from '@/interfaces'
 
 const store = useStore();
 
@@ -12,42 +13,12 @@ const columns = computed({
   get() {
     return board.value.lists
   },
-  set(value) {
-    console.log('columns value', value);
-
-    console.log('commit', commit);
-    // const cloned: Array<unknown> = cloneDeep(props.items?.cards || []);
-    // const cardsWithOrder = [
-    //   ...cloned?.map(({id}, index) => ({
-    //     id,
-    //     position: index * 1000 + 1000,
-    //   })),
-    // ];
-
-    // console.log('cardsWithOrder', cardsWithOrder);
-
-    // emit('reorder-change', {
-    //   id: props?.items?.id,
-    //   cards: cardsWithOrder,
-    // });
-  },
+  set(value: IList[]) {
+    const orderedArr = value.map(({_id}, pos) => ({_id, pos }))
+    store.dispatch('board/LIST_REORDER', orderedArr)
+  }
 })
 
-const onReorderLists = (value: any) => {
-  console.log('values', value);
-}
-
-const onReorderEnds = (value: any) => {
-  console.log('values', value);
-}
-
-const onReorderChangeCards = (data) => {
-  console.log('data', data);
-}
-
-const onReorderCommitCards = () => {
-
-}
 </script>
 
 <template>
@@ -56,12 +27,10 @@ const onReorderCommitCards = () => {
     class='board__list'
     item-key='id'
     tag='ul'
-    @change="onReorderLists"
-    @end="onReorderEnds"
   >
     <template #item="{ element: column }">
       <li class='board__list-item'>
-        <BoardColumn :item='column' />
+        <BoardColumn :item='column'/>
       </li>
     </template>
   </Draggable>

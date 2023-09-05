@@ -32,4 +32,12 @@ export class BoardsEvent {
     return 'LIST_UPDATE'
   }
 
+  public get onListReordered() {
+    return 'LIST_REORDERED'
+  }
+
+  public get emitListReorder() {
+    return 'LIST_REORDER'
+  }
+
 }

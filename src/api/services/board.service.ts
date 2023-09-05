@@ -114,4 +114,17 @@ export class BoardService extends AbstractService{
       }
     )
   }
+
+  public onListReordered(cb: CallbackType<Array<IList>>) {
+    this.register(this.board.onListReordered, cb)
+  }
+  public emitListReorder(data: IList[]) {
+    this.instance.emit(
+      this.board.emitListReorder,
+      {
+        event: this.board.emitListReorder,
+        lists: data
+      }
+    )
+  }
 }

@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { ref } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import TypographyInput from '@/components/TypographyInput.vue'
 
 interface IProps {
@@ -12,18 +12,31 @@ const props = withDefaults(defineProps<IProps>(), {
 })
 
 const isEditing = ref<boolean>(false)
-const title = ref<string>(props.title as string)
+const value = ref<string>(props.title as string)
+
+watchEffect(() => {
+  value.value = props.title
+})
+
+const title = computed({
+  get() {
+    return props.title;
+  },
+  set(value) {
+    value.value = value
+  }
+})
 
 const handleReset = () => {
   isEditing.value = false;
-  title.value = props.title;
+  value.value = props.title;
 }
 
 const handleAction = () => {
   const prevTitle = props.title;
-  const currentValue = title.value;
+  const currentValue = value.value;
   if(prevTitle === currentValue || !currentValue) {
-    title.value = prevTitle;
+    value.value = prevTitle;
     return;
   }
   props.onAction(currentValue);

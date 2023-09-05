@@ -1,8 +1,7 @@
 <script setup lang='ts' >
-import { computed,} from 'vue'
+import { computed, onUpdated, ref, watch, watchEffect } from 'vue'
 import Draggable from 'vuedraggable'
 import { useRoute } from 'vue-router'
-import {cloneDeep} from 'lodash';
 import { useStore } from '@/store'
 import { IBoard, ICard, IList } from '@/interfaces'
 import Card from '@/components/Card.vue'
@@ -13,19 +12,14 @@ import ButtonIcon  from '@/components/ButtonIcon.vue'
 import DeleteIcon from '@/assets/icons/DeleteIcon.vue'
 
 interface IBoardColumnProps {
-  item: IList
+  item: IList;
 }
 
 const store = useStore();
 const route = useRoute()
 
 const boardId: IBoard['id'] = route.params.boardId as IBoard['id'];
-
 const props = defineProps<IBoardColumnProps>()
-const emit = defineEmits<{
-  (e: 'reorder-commit', value: any): void
-  (e: 'change', values: any): void
-}>()
 
 const handleDeleteList = () => {
   store.dispatch('board/LIST_DELETE', {listId: props.item._id})

@@ -53,6 +53,24 @@ const mutations = {
         .sort((a, b) => a.pos - b.pos)
     }
     return state;
+  },
+  LIST_REORDER (state: IBoardState, data: IList[]) {
+    const prevState = state.board ?? {} as IBoard;
+    const positionMap = new Map(data.map((item) => [item._id, item]));
+
+    state.board = {
+      ...prevState,
+      lists: [...prevState.lists]
+        .map((list) => {
+          if(!positionMap.has(list._id)) return list;
+          return  {
+            ...list,
+            ...positionMap.get(list._id)
+          }
+        })
+        .sort((a, b) => a.pos - b.pos)
+    }
+    return state;
   }
 }
 
@@ -100,6 +118,10 @@ const actions = {
       console.log('updated list => data:', data);
       commit("LIST_UPDATE", data);
     })
+    api.board.onListReordered((data: IList[]) => {
+      console.log('reordered list => data:', data);
+      commit("LIST_REORDER", data);
+    })
   },
   DISCONNECT () {
     api.board.disconnect();
@@ -133,6 +155,14 @@ const actions = {
       commit("LIST_UPDATE", data);
     } catch (ex) {
       console.error('LIST_UPDATE', ex.message);
+    }
+  },
+  LIST_REORDER ({ commit }, data: IList[]) {
+    try {
+      api.board.emitListReorder(data)
+      commit("LIST_REORDER", data);
+    } catch (ex) {
+      console.error('LIST_REORDER', ex.message);
     }
   },
 }
