@@ -27,7 +27,7 @@ const onSubmit = (data: IAuthLoginProps) => {
 <template>
   <AuthForm
     title='Register'
-    navTitle='Registration'
+    navTitle='Login'
     :navLink='LOGIN_ROUTE'
     :onSubmit='onSubmit'
   />
